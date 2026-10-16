@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr" id="htmlRoot">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Quickly - Service Livraison & Commerce</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome (seulement pour les icônes de marque Apple/Google Play) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  
+  <!-- ✅ Lucide Icons (SVG professionnels) -->
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body>
+
+  <!-- Loader -->
+  <div id="customerLoader" class="customer-loader">
+    <div class="loader-content">
+      <div class="customer-spinner"></div>
+      <h3>Quickly</h3>
+      <p>Chargement en cours…</p>
+    </div>
+  </div>
+
+  <div class="app-container">
+
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="header-top-row">
+        <button class="icon-btn-header" id="menuToggleBtn" aria-label="Menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="header-brand-logo">
+          <img src="Quickly.png" alt="Quickly" onerror="this.style.display='none'; document.getElementById('logoFallbackText').style.display='block';">
+          <span id="logoFallbackText" style="display:none; font-size:18px; font-weight:900; color:#fff; letter-spacing:1px;">QUICKLY</span>
+        </div>
+        <div class="header-actions-right">
+          <button class="icon-btn-header settings-gear-btn" id="settingsBtn" aria-label="Paramètres">
+            <i data-lucide="settings"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- LOCATION BAR -->
+      <a href="addresses.html" class="location-bar" id="locationBar">
+        <i data-lucide="map-pin"></i>
+        <div class="location-bar-text">
+          <small data-i18n="deliver_to">Livrer à</small>
+          <strong id="locationText">…</strong>
+        </div>
+        <i data-lucide="chevron-down" class="location-caret"></i>
+      </a>
+
+      <!-- SEARCH BAR & FILTER -->
+      <div class="search-container-box">
+        <div class="search-input-wrapper">
+          <i data-lucide="search" class="search-icon"></i>
+          <input type="text" id="searchInput" class="main-search-input" data-i18n-placeholder="search_placeholder" placeholder="Rechercher restaurant, plat, produit…" autocomplete="off">
+          <button class="filter-action-btn" id="filterBtn" aria-label="Filtres">
+            <i data-lucide="sliders-horizontal"></i>
+          </button>
+        </div>
+        <div id="searchResultsDropdown" class="search-dropdown-results hidden"></div>
+      </div>
+    </header>
+
+    <main class="main-content-scroll">
+
+      <!-- PROMO BANNERS SLIDER -->
+      <section class="promo-banner-slider-box" id="promoSliderContainer" style="display: none;">
+        <div class="banner-slides-track" id="bannerSlidesWrapper"></div>
+      </section>
+
+      <!-- BENTO PROMO CARDS -->
+      <section class="bento-promo-section">
+        <div class="bento-card reward-bento" onclick="window.location.href='rewards.html'">
+          <div class="bento-icon-wrap"><i data-lucide="gift"></i></div>
+          <div class="bento-text">
+            <h4 data-i18n="rewards_title">Récompenses</h4>
+            <p data-i18n="rewards_desc">Gagnez des points & cadeaux</p>
+          </div>
+          <i data-lucide="chevron-right" class="bento-arrow"></i>
+        </div>
+        <div class="bento-card invite-bento" onclick="window.location.href='invite.html'">
+          <div class="bento-icon-wrap"><i data-lucide="users"></i></div>
+          <div class="bento-text">
+            <h4 data-i18n="invite_title">Parrainage</h4>
+            <p data-i18n="invite_desc">Invitez & gagnez 30 MAD</p>
+          </div>
+          <i data-lucide="chevron-right" class="bento-arrow"></i>
+        </div>
+      </section>
+
+      <!-- QUICK SERVICE PILLS -->
+      <section class="quick-services-row">
+        <div class="service-pill active" onclick="window.location.href='food.html?category=all'">
+          <div class="pill-icon"><i data-lucide="utensils"></i></div>
+          <span data-i18n="cat_all">Tous</span>
+        </div>
+        <div class="service-pill" onclick="window.location.href='food.html'">
+          <div class="pill-icon"><i data-lucide="sandwich"></i></div>
+          <span data-i18n="cat_food">Food</span>
+        </div>
+        <div class="service-pill" onclick="window.location.href='shops.html'">
+          <div class="pill-icon"><i data-lucide="shopping-basket"></i></div>
+          <span data-i18n="cat_groceries">Groceries</span>
+        </div>
+        <div class="service-pill" id="packageServiceBtn">
+          <div class="pill-icon"><i data-lucide="package"></i></div>
+          <span data-i18n="cat_package">Package</span>
+        </div>
+        <div class="service-pill" onclick="window.location.href='shops.html'">
+          <div class="pill-icon"><i data-lucide="store"></i></div>
+          <span data-i18n="cat_shops">Shops</span>
+        </div>
+        <div class="service-pill" id="paraServiceBtn">
+          <div class="pill-icon"><i data-lucide="stethoscope"></i></div>
+          <span data-i18n="cat_para">Para</span>
+        </div>
+      </section>
+
+      <!-- QUICK FILTER CHIPS -->
+      <section class="filter-chips-row" id="filterChipsRow" aria-label="Filtres rapides">
+        <button class="chip-filter active" data-filter="all">
+          <i data-lucide="layers"></i>
+          <span data-i18n="chip_all">Tout</span>
+        </button>
+        <button class="chip-filter" data-filter="top">
+          <i data-lucide="star"></i>
+          <span data-i18n="chip_top">Mieux notés</span>
+        </button>
+        <button class="chip-filter" data-filter="offers">
+          <i data-lucide="tag"></i>
+          <span data-i18n="chip_offers">Offres</span>
+        </button>
+        <button class="chip-filter" data-filter="near">
+          <i data-lucide="crosshair"></i>
+          <span data-i18n="chip_near">Près de vous</span>
+        </button>
+        <button class="chip-filter" data-filter="free">
+          <i data-lucide="bike"></i>
+          <span data-i18n="chip_free">Livraison gratuite</span>
+        </button>
+        <button class="chip-filter" data-filter="open">
+          <i data-lucide="door-open"></i>
+          <span data-i18n="chip_open">Ouverts</span>
+        </button>
+        <button class="chip-filter chip-reset hidden" id="chipReset">
+          <i data-lucide="x"></i>
+          <span>Réinitialiser</span>
+        </button>
+      </section>
+
+      <!-- POPULAR RESTAURANTS -->
+      <section class="content-section">
+        <div class="section-title-bar">
+          <h2 data-i18n="pop_restaurants">Restaurants populaires</h2>
+          <a href="food.html" class="see-all-link">
+            <span data-i18n="see_all">Voir tout</span>
+            <i data-lucide="arrow-right"></i>
+          </a>
+        </div>
+        <div class="horizontal-cards-scroller" id="restaurantsContainer"></div>
+      </section>
+
+      <!-- SPECIAL OFFER BANNER -->
+      <section class="special-offer-showcase" id="specialOfferSection" style="display: none;">
+        <div class="offer-bg-layer" id="offerBgImg"></div>
+        <div class="offer-content-overlay">
+          <div class="offer-top-badge">
+            <span class="badge-pill"><i data-lucide="zap"></i> <span data-i18n="special_offer">Offre Limitée</span></span>
+            <div class="offer-rest-logo-wrap">
+              <img id="offerRestaurantLogo" src="" alt="Logo" onerror="this.src='https://ui-avatars.com/api/?name=Resto'">
+            </div>
+          </div>
+          <div class="offer-middle-info">
+            <h3 id="offerTitle">Super Offre</h3>
+            <p id="offerRestaurantName">Nom du restaurant</p>
+            <div class="price-tag-pill" id="offerPrice">0 MAD</div>
+          </div>
+          <div class="offer-footer-action">
+            <button class="btn-claim-offer" id="offerBtn">
+              <span data-i18n="order_now">Commander maintenant</span>
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- OFFERS OF THE DAY -->
+      <section class="content-section" id="offersSection" style="display:none;">
+        <div class="section-title-bar">
+          <h2 data-i18n="offers_today">Offres du jour</h2>
+        </div>
+        <div class="horizontal-cards-scroller" id="offersContainer"></div>
+      </section>
+
+      <!-- POPULAR CATEGORIES -->
+      <section class="content-section">
+        <div class="section-title-bar">
+          <h2 data-i18n="pop_categories">Catégories populaires</h2>
+        </div>
+        <div class="categories-grid-scroller" id="categoriesContainer"></div>
+      </section>
+
+      <!-- NEARBY RESTAURANTS -->
+      <section class="content-section">
+        <div class="section-title-bar">
+          <h2 id="nearbyTitle">Près de chez vous</h2>
+          <a href="food.html" class="see-all-link">
+            <span data-i18n="see_all">Voir tout</span>
+            <i data-lucide="arrow-right"></i>
+          </a>
+        </div>
+        <div class="horizontal-cards-scroller" id="nearbyRestaurantsContainer"></div>
+      </section>
+
+      <!-- ALL RESTAURANTS -->
+      <section class="content-section" id="allRestaurantsSection">
+        <div class="section-title-bar">
+          <h2 data-i18n="all_restaurants">Tous les restaurants</h2>
+          <span class="count-pill" id="allRestaurantsCount">0</span>
+        </div>
+        <p class="filter-note" id="filterNote" style="display:none;"></p>
+        <div class="rest-list-v" id="allRestaurantsList"></div>
+      </section>
+
+      <!-- OUR SERVICES GRID -->
+      <section class="content-section">
+        <div class="section-title-bar">
+          <h2 data-i18n="our_services">Nos services</h2>
+          <a href="shops.html" class="see-all-link">
+            <span data-i18n="explore">Explorer</span>
+            <i data-lucide="arrow-right"></i>
+          </a>
+        </div>
+        <div class="services-modern-grid">
+          <div class="service-card-item" onclick="window.location.href='food.html'">
+            <div class="s-icon"><i data-lucide="utensils"></i></div>
+            <h4 data-i18n="s_food">Food</h4>
+            <p data-i18n="s_food_sub">Plats & Repas</p>
+          </div>
+          <div class="service-card-item" onclick="window.location.href='shops.html'">
+            <div class="s-icon"><i data-lucide="shopping-cart"></i></div>
+            <h4 data-i18n="s_courses">Courses</h4>
+            <p data-i18n="s_courses_sub">Supermarchés</p>
+          </div>
+          <div class="service-card-item" data-soon>
+            <div class="s-icon"><i data-lucide="package"></i></div>
+            <h4 data-i18n="s_colis">Colis</h4>
+            <p data-i18n="s_colis_sub">Livraison express</p>
+          </div>
+          <div class="service-card-item" data-soon>
+            <div class="s-icon"><i data-lucide="flower-2"></i></div>
+            <h4 data-i18n="s_flowers">Fleurs</h4>
+            <p data-i18n="s_flowers_sub">Pour vos proches</p>
+          </div>
+          <div class="service-card-item" data-soon>
+            <div class="s-icon"><i data-lucide="stethoscope"></i></div>
+            <h4 data-i18n="s_para">Parapharmacie</h4>
+            <p data-i18n="s_para_sub">Santé & beauté</p>
+          </div>
+          <div class="service-card-item" onclick="window.location.href='shops.html'">
+            <div class="s-icon"><i data-lucide="shopping-bag"></i></div>
+            <h4 data-i18n="s_shops">Boutiques</h4>
+            <p data-i18n="s_shops_sub">Mode & High-Tech</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- APP DOWNLOAD CTA -->
+      <section class="app-download-cta-card">
+        <div class="cta-inner">
+          <h4 style="font-size:16px; font-weight:800; margin-bottom:6px;">Quickly App</h4>
+          <p data-i18n="app_cta_desc">Profitez d'une expérience encore plus rapide sur notre application mobile.</p>
+          <div class="cta-stores">
+            <button class="store-badge-btn"><i class="fa-brands fa-apple"></i> App Store</button>
+            <button class="store-badge-btn"><i class="fa-brands fa-google-play"></i> Google Play</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav class="bottom-nav-bar">
+      <a href="index.html" class="nav-bar-item active">
+        <i data-lucide="house"></i>
+        <span data-i18n="nav_home">Accueil</span>
+      </a>
+      <a href="search.html" class="nav-bar-item">
+        <i data-lucide="compass"></i>
+        <span data-i18n="nav_explore">Explorer</span>
+      </a>
+      <a href="cart.html" class="nav-bar-item cart-highlight-item">
+        <div class="cart-icon-container">
+          <i data-lucide="shopping-bag"></i>
+          <span class="cart-badge-counter" id="cartBadgeCount" style="display:none;">0</span>
+        </div>
+        <span data-i18n="nav_cart">Panier</span>
+      </a>
+      <a href="profile.html" class="nav-bar-item">
+        <i data-lucide="circle-user"></i>
+        <span data-i18n="nav_profile">Profil</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <!-- SIDE DRAWER MENU -->
+  <div class="drawer-overlay hidden" id="drawerOverlay"></div>
+  <aside class="side-drawer" id="sideDrawer">
+    <div class="drawer-header">
+      <div class="drawer-brand-area">
+        <h3 style="font-size: 16px; font-weight: 800; color: #fff; margin:0;" data-i18n="our_services">Nos Services</h3>
+        <p style="font-size: 10px; opacity: 0.85; margin:0;">Navigation rapide</p>
+      </div>
+      <button class="drawer-close-btn" id="closeDrawerBtn" aria-label="Fermer">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <nav class="drawer-menu-list">
+      <a href="index.html" class="drawer-item active">
+        <i data-lucide="house"></i> <span data-i18n="nav_home">Accueil</span>
+      </a>
+      
+      <div class="drawer-divider"></div>
+
+      <a href="food.html?category=all" class="drawer-item">
+        <i data-lucide="utensils"></i> <span data-i18n="cat_food">Food & Restaurants</span>
+      </a>
+      
+      <a href="shops.html?category=groceries" class="drawer-item">
+        <i data-lucide="shopping-basket"></i> <span data-i18n="cat_groceries">Groceries & Courses</span>
+      </a>
+      
+      <a href="shops.html" class="drawer-item">
+        <i data-lucide="store"></i> <span data-i18n="cat_shops">Shops & Boutiques</span>
+      </a>
+      
+      <a href="food.html?category=package" class="drawer-item">
+        <i data-lucide="package"></i> <span data-i18n="cat_package">Package & Colis</span>
+      </a>
+      
+      <a href="food.html?category=parapharmacy" class="drawer-item">
+        <i data-lucide="stethoscope"></i> <span data-i18n="cat_para">Parapharmacie</span>
+      </a>
+      
+      <a href="shops.html?category=extra" class="drawer-item">
+        <i data-lucide="flower-2"></i> <span>Fleurs & Extra</span>
+      </a>
+
+      <div class="drawer-divider"></div>
+
+      <a href="search.html" class="drawer-item">
+        <i data-lucide="compass"></i> <span data-i18n="nav_explore">Recherche & Explorer</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- SETTINGS MODAL -->
+  <div class="modal-overlay-backdrop hidden" id="settingsModal">
+    <div class="modal-card-sheet">
+      <div class="modal-sheet-header">
+        <h3 data-i18n="settings_title">Paramètres de l'application</h3>
+        <button class="close-sheet-btn" id="closeSettingsModal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-sheet-body">
+        
+        <div class="setting-option-row">
+          <div class="opt-label"><i data-lucide="globe"></i> <span data-i18n="lang_label">Langue / اللغة</span></div>
+          <select id="languageSelect" class="styled-select-box">
+            <option value="fr">Français</option>
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+
+        <div class="setting-option-row">
+          <div class="opt-label"><i data-lucide="moon"></i> <span data-i18n="dark_mode">Mode Sombre</span></div>
+          <label class="switch-toggle-ios">
+            <input type="checkbox" id="darkModeToggle">
+            <span class="slider-ios"></span>
+          </label>
+        </div>
+
+        <div class="setting-option-row clickable" onclick="window.location.href='profile.html'">
+          <div class="opt-label"><i data-lucide="user-cog"></i> <span data-i18n="profile_mgmt">Gestion du Profil</span></div>
+          <i data-lucide="chevron-right" class="text-muted"></i>
+        </div>
+
+        <div class="setting-option-row clickable" onclick="window.location.href='rewards.html'">
+          <div class="opt-label"><i data-lucide="award"></i> <span data-i18n="loyalty_points">Mes Points & Fidélité</span></div>
+          <i data-lucide="chevron-right" class="text-muted"></i>
+        </div>
+
+        <div class="app-version-info">
+          <span>Quickly v1.6.0</span>
+          <small data-i18n="dev_credit">Développé avec excellence</small>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER MODAL -->
+  <div class="modal-overlay-backdrop hidden" id="filterModal">
+    <div class="modal-card-sheet">
+      <div class="modal-sheet-header">
+        <h3>Filtrer la recherche</h3>
+        <button class="close-sheet-btn" id="closeFilterModal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-sheet-body">
+        <div class="setting-option-row clickable" onclick="window.location.href='food.html?sort=rating'">
+          <div class="opt-label"><i data-lucide="star" style="color:#eab308"></i> Les mieux notés (⭐ 4.5+)</div>
+          <i data-lucide="chevron-right" class="text-muted"></i>
+        </div>
+        <div class="setting-option-row clickable" onclick="window.location.href='food.html?sort=fast'">
+          <div class="opt-label"><i data-lucide="bike" style="color:var(--primary-blue)"></i> Livraison rapide (&lt; 30 min)</div>
+          <i data-lucide="chevron-right" class="text-muted"></i>
+        </div>
+        <div class="setting-option-row clickable" onclick="window.location.href='food.html?category=all'">
+          <div class="opt-label"><i data-lucide="utensils" style="color:#ff7a00"></i> Tous les restaurants</div>
+          <i data-lucide="chevron-right" class="text-muted"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Toast -->
+  <div id="filterToast" class="filter-toast"></div>
+
+  <!-- Script de diagnostic -->
+  <script>
+  (function () {
+    function show(msg) {
+      window.__loadErr = true;
+      var p = document.querySelector('#customerLoader p');
+      if (p) { p.style.color = '#ef4444'; p.style.fontSize = '12px'; p.style.padding = '0 16px'; p.style.wordBreak = 'break-word'; p.textContent = msg; }
+    }
+    window.addEventListener('error', function (e) {
+      var t = e.target;
+      var m = (t && (t.src || t.href)) ? 'Fichier introuvable : ' + (t.src || t.href).split('/').pop()
+            : (e.message || 'Erreur') + (e.filename ? ' (' + e.filename.split('/').pop() + ':' + e.lineno + ')' : '');
+      show(m);
+    }, true);
+    window.addEventListener('unhandledrejection', function (e) {
+      show('Erreur : ' + ((e.reason && e.reason.message) || e.reason));
+    });
+    setTimeout(function () {
+      var l = document.getElementById('customerLoader');
+      if (l && !window.__loadErr) { l.style.opacity = '0'; setTimeout(function () { l.remove(); }, 300); }
+    }, 8000);
+  })();
+  </script>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:"Cairo",sans-serif;
+}
+
+body{
+background:#f6f7fb;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+.login-card{
+width:100%;
+max-width:430px;
+background:#fff;
+padding:35px 28px;
+border-radius:28px;
+box-shadow:0 15px 40px rgba(0,0,0,.08);
+animation:fade .4s;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+.logo{
+width:200px;
+display:block;
+margin:0 auto 30px;
+
+}
+
+h1{
+font-size:31px;
+text-align:center;
+color:#222;
+font-weight:800;
+margin-bottom:8px;
+}
+
+.subtitle{
+text-align:center;
+color:#777;
+font-size:15px;
+margin-bottom:30px;
+}
+
+.google-btn,
+.phone-btn{
+width:100%;
+height:58px;
+border-radius:16px;
+border:none;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:12px;
+font-size:17px;
+font-weight:700;
+transition:.25s;
+margin-bottom:15px;
+}
+
+.google-btn{
+background:#fff;
+border:1px solid #ddd;
+}
+
+.google-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.google-btn img{
+width:24px;
+}
+
+.phone-btn{
+background: dodgerblue;
+color:#fff;
+}
+
+.phone-btn:hover{
+background: dodgerblue;
+transform:translateY(-2px);
+}
+
+.phone-btn i{
+font-size:22px;
+}
+
+.divider{
+text-align:center;
+margin:28px 0;
+font-weight:700;
+color:#888;
+position:relative;
+}
+
+.divider:before,
+.divider:after{
+content:"";
+position:absolute;
+top:50%;
+width:34%;
+height:1px;
+background:#e5e5e5;
+}
+
+.divider:before{
+left:0;
+}
+
+.divider:after{
+right:0;
+}
+
+.feature{
+display:flex;
+gap:15px;
+align-items:center;
+margin-bottom:20px;
+}
+
+.feature i{
+width:48px;
+height:48px;
+background:#FFF3E8;
+color: dodgerblue;
+display:flex;
+justify-content:center;
+align-items:center;
+border-radius:14px;
+font-size:20px;
+}
+
+.feature h3{
+font-size:16px;
+color:#222;
+margin-bottom:3px;
+}
+
+.feature p{
+font-size:14px;
+color:#777;
+}
+
+.policy{
+margin-top:25px;
+text-align:center;
+font-size:13px;
+color:#777;
+line-height:22px;
+}
+
+.policy a{
+color: dodgerblue;
+font-weight:700;
+text-decoration:none;
+}
+
+.policy a:hover{
+text-decoration:underline;
+}
+
+#recaptcha-container{
+margin:15px 0;
+display:flex;
+justify-content:center;
+}
+
+@media(max-width:480px){
+
+.login-card{
+padding:28px 22px;
+border-radius:24px;
+}
+
+h1{
+font-size:28px;
+}
+
+.google-btn,
+.phone-btn{
+height:55px;
+font-size:16px;
+}
+
+}
+.phone-form {
+  
+  display: none;
+  
+  margin-top: 18px;
+  
+  animation: fade .3s;
+  
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 0 18px;
+  border: 2px solid #ececec;
+  border-radius: 18px;
+  background: #fff;
+  transition: .25s;
+  margin-bottom: 18px;
+}
+
+.input-group:focus-within {
+  border-color: dodgerblue;
+  box-shadow: 0 0 0 4px rgba(255, 122, 0, .12);
+}
+
+.input-group i {
+  
+  color: dodgerblue;
+  
+  font-size: 20px;
+  
+  margin-right: 12px;
+  
+}
+
+.input-group input {
+  
+  flex: 1;
+  
+  border: none;
+  
+  outline: none;
+  
+  font-size: 16px;
+  
+  font-weight: 600;
+  
+  background: transparent;
+  
+  color: #222;
+  
+}
+
+.continue-btn {
+  
+  width: 100%;
+  height: 58px;
+  
+  background: linear-gradient(135deg, dodgerblue, dodgerblue);
+  
+  border: none;
+  
+  border-radius: 18px;
+  
+  color: #fff;
+  
+  font-size: 17px;
+  
+  font-weight: 700;
+  
+  cursor: pointer;
+  
+  transition: .25s;
+  
+  box-shadow: 0 8px 18px rgba(255, 122, 0, .30);
+  
+}
+
+.continue-btn:hover {
+  
+  transform: translateY(-2px);
+  
+  box-shadow: 0 12px 25px rgba(255, 122, 0, .40);
+  
+}

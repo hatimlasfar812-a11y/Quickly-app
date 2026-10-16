@@ -1,0 +1,506 @@
+/* =====================================================
+   home.css — styles de la nouvelle page d'accueil Quickly
+   (s'ajoute APRÈS style.css, ne le remplace pas)
+===================================================== */
+
+/* ---------- Barre d'adresse (en-tête) ---------- */
+.location-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 14px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+.location-bar > i.fa-location-dot { font-size: 18px; color: #ffd27a; }
+.location-bar-text { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
+.location-bar-text small { font-size: 10px; opacity: 0.8; }
+.location-bar-text strong {
+  font-size: 13px; font-weight: 700;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.location-caret { font-size: 11px; opacity: 0.8; }
+
+/* ---------- Puces de filtres rapides ---------- */
+.filter-chips-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 16px 10px;
+  scrollbar-width: none;
+}
+.filter-chips-row::-webkit-scrollbar { display: none; }
+
+.chip-filter {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-card);
+  color: var(--text-primary);
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.1s;
+}
+.chip-filter i { font-size: 12px; color: var(--primary-blue); }
+.chip-filter:active { transform: scale(0.96); }
+.chip-filter.active {
+  background: var(--primary-blue);
+  border-color: var(--primary-blue);
+  color: #ffffff;
+}
+.chip-filter.active i { color: #ffffff; }
+.chip-filter.loading { opacity: 0.6; pointer-events: none; }
+
+/* ---------- Bannières ---------- */
+.promo-banner-slider-box { height: 170px; margin: 14px 16px 6px; }
+.banner-cover { object-fit: cover; }
+.banner-text-overlay {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 26px 16px 14px;
+  background: linear-gradient(to top, rgba(2, 6, 23, 0.82), rgba(2, 6, 23, 0));
+  color: #ffffff;
+  pointer-events: none;
+}
+.banner-text-overlay h3 { font-size: 17px; font-weight: 800; margin-bottom: 2px; }
+.banner-text-overlay p { font-size: 12px; opacity: 0.9; }
+.banner-dots {
+  position: absolute;
+  bottom: 8px; right: 12px;
+  display: flex; gap: 5px; z-index: 3;
+}
+[dir="rtl"] .banner-dots { right: auto; left: 12px; }
+.banner-dots span {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer; transition: width 0.25s, background 0.25s;
+}
+.banner-dots span.active { width: 18px; border-radius: 4px; background: #ffffff; }
+
+/* ---------- Cartes : badges ---------- */
+.badge-stack {
+  position: absolute;
+  top: 8px; left: 8px;
+  display: flex; flex-direction: column; gap: 4px;
+  align-items: flex-start;
+  z-index: 2;
+}
+[dir="rtl"] .badge-stack { left: auto; right: 8px; align-items: flex-end; }
+.mini-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 800;
+  padding: 3px 8px; border-radius: 8px; color: #fff;
+  max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.badge-offer { background: #ef4444; }
+.badge-free { background: #16a34a; }
+
+.card-meta {
+  display: flex; flex-wrap: wrap; gap: 4px 10px;
+  font-size: 11px; color: var(--text-secondary); font-weight: 600;
+  align-items: center;
+}
+.card-meta i { margin-right: 3px; }
+[dir="rtl"] .card-meta i { margin-right: 0; margin-left: 3px; }
+.meta-rating { color: #d97706; font-weight: 800; }
+.meta-rating i { color: #eab308; }
+.meta-new { color: var(--primary-blue); font-weight: 800; }
+
+/* ---------- Restaurant fermé ---------- */
+.closed-overlay {
+  position: absolute; inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 3;
+}
+.closed-overlay span {
+  background: #ffffff; color: #0f172a;
+  font-size: 12px; font-weight: 800;
+  padding: 5px 14px; border-radius: 999px;
+}
+.is-closed .card-title, .is-closed h4 { opacity: 0.7; }
+
+/* =====================================================
+   LISTE HORIZONTALE — Restaurants Scrollables
+   (Style Glovo / Uber Eats — cards compactes)
+===================================================== */
+
+/* Conteneur : flex horizontal avec scroll */
+.rest-list-v {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 16px 16px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* Indice visuel : un peu de marge à droite pour montrer qu'on peut scroller */
+  scroll-padding-inline-start: 16px;
+}
+
+/* Masquer scrollbar sur WebKit */
+.rest-list-v::-webkit-scrollbar {
+  display: none;
+}
+
+/* Pour forcer l'alignement en RTL */
+[dir="rtl"] .rest-list-v {
+  padding: 4px 16px 16px;
+}
+
+/* Carte restaurant compacte */
+.rest-card-v {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 200px;          /* Largeur fixe : 200px */
+  max-width: 200px;
+  min-width: 200px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  scroll-snap-align: start;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.rest-card-v:active {
+  transform: scale(0.97);
+}
+
+/* Image compacte */
+.rest-card-v-img {
+  position: relative;
+  width: 100%;
+  height: 110px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #dbeafe, #e2e8f0);
+  flex-shrink: 0;
+}
+
+.rest-card-v-img > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.rest-card-v:hover .rest-card-v-img > img {
+  transform: scale(1.05);
+}
+
+/* Logo chip — plus petit */
+.rest-logo-chip {
+  position: absolute;
+  bottom: -14px;
+  left: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 4;
+}
+
+[dir="rtl"] .rest-logo-chip {
+  left: auto;
+  right: 10px;
+}
+
+.rest-logo-chip img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Corps de la carte */
+.rest-card-v-body {
+  padding: 16px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.rest-card-v-body h4 {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rest-card-v-body p {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+/* Meta info compacte (rating + time + fee) */
+.rest-card-v-body .card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  font-size: 10.5px;
+  margin-top: 4px;
+  align-items: center;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.rest-card-v-body .card-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.rest-card-v-body .card-meta i {
+  font-size: 10px;
+}
+
+.rest-card-v-body .meta-rating {
+  color: #d97706;
+  font-weight: 800;
+}
+
+.rest-card-v-body .meta-rating i {
+  color: #eab308;
+  font-size: 11px;
+}
+
+.rest-card-v-body .meta-new {
+  color: var(--primary-blue);
+  font-weight: 800;
+  font-size: 10px;
+  background: rgba(8, 120, 209, 0.1);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+/* Badges compactes sur l'image */
+.rest-card-v .badge-stack {
+  top: 6px;
+  left: 6px;
+  gap: 3px;
+}
+
+[dir="rtl"] .rest-card-v .badge-stack {
+  left: auto;
+  right: 6px;
+}
+
+.rest-card-v .mini-badge {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  max-width: 120px;
+  font-weight: 800;
+}
+
+.rest-card-v .mini-badge i {
+  font-size: 8px;
+}
+
+/* Overlay fermé (compact) */
+.rest-card-v .closed-overlay span {
+  font-size: 10px;
+  padding: 3px 10px;
+}
+
+/* État fermé : opacité légère */
+.rest-card-v.is-closed .rest-card-v-img > img {
+  filter: grayscale(0.4);
+  opacity: 0.7;
+}
+
+.rest-card-v.is-closed h4 {
+  opacity: 0.7;
+}
+
+/* Animation d'entrée */
+.rest-card-v {
+  animation: cardSlideIn 0.4s ease-out backwards;
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.rest-card-v:nth-child(1) { animation-delay: 0.03s; }
+.rest-card-v:nth-child(2) { animation-delay: 0.06s; }
+.rest-card-v:nth-child(3) { animation-delay: 0.09s; }
+.rest-card-v:nth-child(4) { animation-delay: 0.12s; }
+.rest-card-v:nth-child(5) { animation-delay: 0.15s; }
+.rest-card-v:nth-child(6) { animation-delay: 0.18s; }
+.rest-card-v:nth-child(7) { animation-delay: 0.21s; }
+.rest-card-v:nth-child(8) { animation-delay: 0.24s; }
+.rest-card-v:nth-child(n+9) { animation-delay: 0.27s; }
+
+/* Indicateur visuel de scroll (gradient de fondu sur le bord droit) */
+#allRestaurantsSection {
+  position: relative;
+}
+
+#allRestaurantsSection::after {
+  content: "";
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 30px;
+  height: calc(100% - 80px);
+  background: linear-gradient(to right, transparent, var(--surface-light) 70%);
+  pointer-events: none;
+  opacity: 0.9;
+  z-index: 2;
+}
+
+[dir="rtl"] #allRestaurantsSection::after {
+  right: auto;
+  left: 0;
+  background: linear-gradient(to left, transparent, var(--surface-light) 70%);
+}
+
+/* Responsive : sur très petits écrans */
+@media (max-width: 360px) {
+  .rest-card-v {
+    flex: 0 0 175px;
+    max-width: 175px;
+    min-width: 175px;
+  }
+  
+  .rest-card-v-img {
+    height: 100px;
+  }
+  
+  .rest-card-v-body h4 {
+    font-size: 12.5px;
+  }
+}
+
+/* Sur tablettes/desktop (si le site s'ouvre en grand) */
+@media (min-width: 600px) {
+  .rest-card-v {
+    flex: 0 0 220px;
+    max-width: 220px;
+    min-width: 220px;
+  }
+  
+  .rest-card-v-img {
+    height: 130px;
+  }
+}
+
+/* Sticky count pill qui reste visible */
+.section-title-bar {
+  position: sticky;
+  top: 0;
+  background: var(--surface-light);
+  z-index: 5;
+  padding-top: 4px;
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+}
+/* ---------- Mini cartes d'offres ---------- */
+.offer-mini-card {
+  flex: 0 0 210px; text-decoration: none; color: inherit;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden; box-shadow: var(--shadow-card);
+}
+.offer-mini-img { height: 96px; }
+.offer-mini-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.offer-mini-body { padding: 10px; }
+.offer-mini-body h5 { font-size: 13px; font-weight: 800; color: var(--text-primary); }
+.offer-mini-body p { font-size: 11px; color: var(--text-secondary); margin: 2px 0 6px; }
+.offer-mini-price {
+  display: inline-block; background: #fff1e6; color: #ea580c;
+  font-size: 12px; font-weight: 800; padding: 2px 10px; border-radius: 999px;
+}
+
+/* ---------- Compteur / note ---------- */
+.count-pill {
+  background: rgba(8, 120, 209, 0.1); color: var(--primary-blue);
+  font-size: 12px; font-weight: 800; padding: 3px 12px; border-radius: 999px;
+}
+.filter-note {
+  font-size: 11.5px; color: var(--text-secondary);
+  background: var(--bg-light); border: 1px dashed var(--border-subtle);
+  border-radius: 10px; padding: 8px 10px; margin-bottom: 10px;
+}
+
+/* ---------- Lien « Voir tous les résultats » ---------- */
+.search-see-all {
+  display: block; text-align: center; text-decoration: none;
+  padding: 11px; font-size: 12.5px; font-weight: 800;
+  color: var(--primary-blue); border-top: 1px solid var(--border-subtle);
+}
+
+/* ---------- États : chargement / vide / erreur ---------- */
+.skeleton {
+  border-radius: var(--radius-md);
+  background: linear-gradient(90deg, var(--border-subtle) 25%, var(--bg-light) 50%, var(--border-subtle) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.3s infinite linear;
+}
+.sk-h { flex: 0 0 165px; height: 190px; }
+.sk-v { height: 210px; border-radius: var(--radius-lg); }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+.home-state {
+  width: 100%; text-align: center;
+  padding: 26px 12px; color: var(--text-secondary); font-size: 13px;
+}
+.home-state i { font-size: 32px; opacity: 0.55; display: block; margin-bottom: 8px; }
+.retry-btn {
+  margin-top: 10px; border: none; cursor: pointer;
+  background: var(--primary-blue); color: #fff;
+  padding: 8px 18px; border-radius: 999px; font-weight: 700; font-size: 12px;
+}
+
+/* ---------- Toast ---------- */
+.home-toast {
+  position: fixed; left: 50%; bottom: 100px;
+  transform: translate(-50%, 20px);
+  background: #0f172a; color: #fff;
+  padding: 10px 18px; border-radius: 999px;
+  font-size: 13px; font-weight: 700;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+  z-index: 9999; max-width: 90%; text-align: center;
+}
+.home-toast.show { opacity: 1; transform: translate(-50%, 0); }

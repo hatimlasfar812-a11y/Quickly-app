@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0878D1">
+  <title>Quickly - حسابي</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons (نسخة ثابتة بدل latest) -->
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+
+  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="profile-extra.css">
+</head>
+<body>
+
+  <!-- Loader -->
+  <div id="customerLoader" class="customer-loader">
+    <div class="loader-content">
+      <div class="customer-spinner"></div>
+      <h3>Quickly</h3>
+      <p data-i18n="loading">جاري تحميل الحساب…</p>
+    </div>
+  </div>
+
+  <div class="app-container">
+
+    <!-- SUB HEADER -->
+    <header class="sub-header-bar">
+      <a href="index.html" class="back-nav-btn" data-i18n-aria="back" aria-label="رجوع">
+        <i data-lucide="arrow-right"></i>
+      </a>
+      <h2 data-i18n="profile_title">الملف الشخصي</h2>
+      <span class="header-spacer" aria-hidden="true"></span>
+    </header>
+
+    <main class="main-content-scroll">
+
+      <!-- USER HERO CARD -->
+      <div class="profile-hero-card">
+        <div class="profile-avatar-wrap">
+          <img id="userAvatarImg" alt="">
+        </div>
+        <div class="profile-hero-info">
+          <h3 id="userName">…</h3>
+          <p id="userEmail">—</p>
+          <span class="vip-badge-tag">
+            <i data-lucide="crown"></i>
+            <span data-i18n="member_badge">عضو Quickly</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- MENU LIST ITEMS -->
+      <div class="profile-menu-list">
+
+        <button type="button" class="profile-menu-item" id="openInfoModal">
+          <div class="menu-item-left">
+            <div class="m-icon blue"><i data-lucide="user-pen"></i></div>
+            <span data-i18n="my_info">معلوماتي</span>
+          </div>
+          <i data-lucide="chevron-left" class="text-muted"></i>
+        </button>
+
+        <a href="my-orders.html" class="profile-menu-item">
+          <div class="menu-item-left">
+            <div class="m-icon orange"><i data-lucide="package"></i></div>
+            <span data-i18n="my_orders">طلباتي</span>
+          </div>
+          <i data-lucide="chevron-left" class="text-muted"></i>
+        </a>
+
+        <!-- تتبع الطلب: يفتح الطلب النشط مباشرة -->
+        <button type="button" class="profile-menu-item" id="trackOrderBtn">
+          <div class="menu-item-left">
+            <div class="m-icon green"><i data-lucide="truck"></i></div>
+            <span data-i18n="track_order">تتبع الطلب</span>
+          </div>
+          <div class="menu-item-right">
+            <span class="active-order-badge hidden" id="activeOrderBadge">0</span>
+            <i data-lucide="chevron-left" class="text-muted"></i>
+          </div>
+        </button>
+
+        <a href="addresses.html" class="profile-menu-item">
+          <div class="menu-item-left">
+            <div class="m-icon purple"><i data-lucide="map-pin"></i></div>
+            <span data-i18n="my_addresses">عناويني</span>
+          </div>
+          <i data-lucide="chevron-left" class="text-muted"></i>
+        </a>
+
+        <!-- الصفحة غير موجودة بعد: تعرض رسالة "قريبًا" -->
+        <a href="#" class="profile-menu-item" data-soon>
+          <div class="menu-item-left">
+            <div class="m-icon yellow"><i data-lucide="award"></i></div>
+            <span data-i18n="rewards_title">نقاطي ومكافآتي</span>
+          </div>
+          <i data-lucide="chevron-left" class="text-muted"></i>
+        </a>
+
+        <a href="https://wa.me/212000000000" target="_blank" rel="noopener noreferrer" class="profile-menu-item">
+          <div class="menu-item-left">
+            <div class="m-icon teal"><i data-lucide="headset"></i></div>
+            <span data-i18n="support">الدعم والمساعدة</span>
+          </div>
+          <i data-lucide="chevron-left" class="text-muted"></i>
+        </a>
+
+        <!-- الصفحة غير موجودة بعد: تعرض رسالة "قريبًا" -->
+        <a href="#" class="profile-menu-item" data-soon>
+          <div class="menu-item-left">
+            <div class="m-icon dark"><i data-lucide="shield-check"></i></div>
+            <span data-i18n="privacy_policy">سياسة الخصوصية</span>
+          </div>
+          <i data-lucide="chevron-left" class="text-muted"></i>
+        </a>
+
+      </div>
+
+      <!-- LOGOUT BUTTON -->
+      <button type="button" id="logoutBtn" class="logout-action-btn">
+        <i data-lucide="log-out"></i>
+        <span data-i18n="logout">تسجيل الخروج</span>
+      </button>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav class="bottom-nav-bar">
+      <a href="index.html" class="nav-bar-item">
+        <i data-lucide="house"></i>
+        <span data-i18n="nav_home">الرئيسية</span>
+      </a>
+      <a href="food.html" class="nav-bar-item">
+        <i data-lucide="compass"></i>
+        <span data-i18n="nav_explore">استكشاف</span>
+      </a>
+      <a href="cart.html" class="nav-bar-item cart-highlight-item">
+        <div class="cart-icon-container">
+          <i data-lucide="shopping-bag"></i>
+          <span class="cart-badge-counter" id="cartBadgeCount" style="display:none;">0</span>
+        </div>
+        <span data-i18n="nav_cart">السلة</span>
+      </a>
+      <a href="profile.html" class="nav-bar-item active">
+        <i data-lucide="circle-user"></i>
+        <span data-i18n="nav_profile">حسابي</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <!-- EDIT INFO MODAL -->
+  <div class="modal-overlay-backdrop hidden" id="infoModal">
+    <div class="modal-card-sheet" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+      <div class="modal-sheet-header">
+        <h3 id="infoModalTitle" data-i18n="edit_info_title">تعديل معلوماتي</h3>
+        <button type="button" class="close-sheet-btn" id="closeInfoModal" data-i18n-aria="close" aria-label="إغلاق">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-sheet-body">
+        <form id="updateProfileForm" novalidate>
+          <div class="form-group-box">
+            <label for="editFullName" data-i18n="full_name">الاسم الكامل</label>
+            <input type="text" id="editFullName" class="styled-input" autocomplete="name" maxlength="60" required>
+          </div>
+          <div class="form-group-box">
+            <label for="editPhone" data-i18n="phone">رقم الهاتف</label>
+            <input type="tel" id="editPhone" class="styled-input" inputmode="tel" autocomplete="tel" placeholder="06XXXXXXXX" dir="ltr" required>
+          </div>
+          <button type="submit" class="btn-save-profile" id="saveProfileBtn" data-i18n="save_changes">
+            حفظ التعديلات
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="profile.js"></script>
+</body>
+</html>

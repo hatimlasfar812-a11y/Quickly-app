@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr" id="htmlRoot">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Quickly - Caisse & Validation</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="checkout.css">
+</head>
+
+<body>
+
+  <!-- Top Header -->
+  <header class="top-header">
+    <button id="backBtn" class="back-btn" aria-label="Retour">
+      <i class="fa-solid fa-arrow-left"></i>
+    </button>
+    <h2 data-i18n="checkout_title">Finaliser la commande</h2>
+  </header>
+
+  <main class="container">
+
+    <!-- Delivery Address Card -->
+    <div class="card">
+      <div class="card-header">
+        <h3>
+          <i class="fa-solid fa-location-dot"></i>
+          <span data-i18n="delivery_address">Adresse de livraison</span>
+        </h3>
+        <button id="changeAddress" class="btn-change-addr" data-i18n="change">Changer</button>
+      </div>
+      <p id="deliveryAddress" class="address-text">Sélectionnez une adresse de livraison</p>
+    </div>
+
+    <!-- Order Summary Card -->
+    <div class="card">
+      <h3>
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span data-i18n="order_summary">Résumé de la commande</span>
+      </h3>
+      <div id="orderItems" class="order-items-list"></div>
+    </div>
+
+    <!-- Delivery Notes Card -->
+    <div class="card">
+      <h3>
+        <i class="fa-solid fa-note-sticky"></i>
+        <span data-i18n="delivery_notes">Instructions pour le livreur</span>
+      </h3>
+      <textarea id="orderNote" class="styled-textarea" placeholder="Ex: Veuillez sonner à l'interphone, étage 2..."></textarea>
+    </div>
+
+    <!-- Payment Method Card -->
+    <div class="card">
+      <h3>
+        <i class="fa-solid fa-credit-card"></i>
+        <span data-i18n="payment_method">Mode de paiement</span>
+      </h3>
+
+      <label class="payment-option active">
+        <input type="radio" name="payment" value="Cash" checked>
+        <div class="pay-info">
+          <strong>Paiement à la livraison (Cash)</strong>
+          <p>Payez en espèces dès réception de votre commande.</p>
+        </div>
+      </label>
+
+      <label class="payment-option disabled">
+        <input type="radio" disabled>
+        <div class="pay-info">
+          <strong>Carte Bancaire (CB)</strong>
+          <span class="coming-badge">Bientôt disponible</span>
+        </div>
+      </label>
+
+      <label class="payment-option disabled">
+        <input type="radio" disabled>
+        <div class="pay-info">
+          <strong>Solde Quickly Wallet</strong>
+          <span class="coming-badge">Bientôt disponible</span>
+        </div>
+      </label>
+    </div>
+
+    <!-- Coupon Card -->
+    <div class="card">
+      <h3>
+        <i class="fa-solid fa-ticket"></i>
+        <span data-i18n="coupon_code">Code Promo</span>
+      </h3>
+      <div class="coupon-box">
+        <input type="text" id="couponInput" placeholder="Entrez votre code promo">
+        <button id="applyCouponBtn">Appliquer</button>
+      </div>
+      <small id="couponMessage" class="coupon-msg"></small>
+    </div>
+
+    <!-- Price Summary Card -->
+    <div class="card price-card">
+      <div class="price-row">
+        <span>Sous-total</span>
+        <b id="subtotal">0.00 DH</b>
+      </div>
+      <div class="price-row">
+        <span>Frais de livraison</span>
+        <b id="deliveryFee">12.00 DH</b>
+      </div>
+      <div class="price-row">
+        <span>Frais de service</span>
+        <b id="serviceFee">2.00 DH</b>
+      </div>
+      <div class="price-row discount-row" id="discountRow" style="display:none; color:#16a34a;">
+        <span>Réduction</span>
+        <b id="discountAmount">-0.00 DH</b>
+      </div>
+      <hr class="price-divider">
+      <div class="price-row total-row">
+        <span>Total à payer</span>
+        <b id="totalPrice">0.00 DH</b>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Sticky Bottom Action Bar -->
+  <div class="bottom-bar">
+    <button id="placeOrder" class="btn-place-order">
+      <span data-i18n="confirm_order">Valider la commande</span>
+    </button>
+  </div>
+
+  <script type="module" src="checkout.js"></script>
+</body>
+
+</html>

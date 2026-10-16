@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login | One Call</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<link rel="stylesheet" href="login.css">
+
+</head>
+
+<body>
+
+<div class="login-card">
+
+<img src="Quickly1.png" class="logo">
+
+<h1>Welcome Back</h1>
+
+<p class="subtitle">
+Sign in to continue using One Call
+</p>
+
+<button id="googleLogin" class="google-btn">
+
+<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+
+<span>Continue with Google</span>
+
+</button>
+
+<button id="phoneLogin" class="phone-btn">
+<i class="fa-solid fa-mobile-screen-button"></i>
+<span>Continue with Phone</span>
+</button>
+
+<div id="phoneForm" class="phone-form">
+
+<div class="input-group">
+
+<i class="fa-solid fa-phone"></i>
+
+<input
+type="tel"
+id="phoneInput"
+placeholder="+212 6 XX XX XX XX">
+
+</div>
+
+<button id="sendCodeBtn" class="continue-btn">
+
+Continue
+
+</button>
+
+</div>
+
+<div id="recaptcha-container"></div>
+
+<div class="divider">
+<span>Why Quickly?</span>
+</div>
+
+<div class="feature">
+
+<i class="fa-solid fa-bolt"></i>
+
+<div>
+
+<h3>Fast Delivery</h3>
+
+<p>Get your order in minutes.</p>
+
+</div>
+
+</div>
+
+<div class="feature">
+
+<i class="fa-solid fa-shield-halved"></i>
+
+<div>
+
+<h3>Secure Account</h3>
+
+<p>Your data is always protected.</p>
+
+</div>
+
+</div>
+
+<div class="feature">
+
+<i class="fa-solid fa-location-dot"></i>
+
+<div>
+
+<h3>Live Tracking</h3>
+
+<p>Track your order in real time.</p>
+
+</div>
+
+</div>
+
+<p class="policy">
+
+By continuing you agree to our
+
+<a href="terms.html">Terms</a>
+
+and
+
+<a href="privacy.html">Privacy Policy</a>
+
+</p>
+
+</div>
+
+<script type="module" src="login.js"></script>
+
+</body>
+</html>

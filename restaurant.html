@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Restaurant</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  
+  <link rel="stylesheet" href="restaurant.css">
+  <link rel="stylesheet" href="menu.css">
+</head>
+
+<body>
+  
+  <div class="app">
+    
+    <header class="header">
+      
+      <button id="backBtn">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      
+      <button id="favoriteBtn">
+        <i class="fa-regular fa-heart"></i>
+      </button>
+      
+    </header>
+    
+<section class="restaurant-header">
+  
+  <div id="restaurantHero"></div>
+  
+  <div id="restaurantInfo"></div>
+  <!-- Categories -->
+
+<!-- Product Modal -->
+<div class="product-modal" id="productModal">
+  <div class="product-sheet">
+    <div id="productContent"></div>
+  </div>
+</div>
+
+<!-- Cart -->
+
+</section>
+    
+   <section id="restaurantCategories" class="menu-tabs"></section>
+
+<section id="restaurantMenu" class="menu-list"></section>
+    
+
+
+  </div>
+ 
+
+
+<script type="module" src="restaurant.js"></script>
+
+<script type="module" src="menu.js"></script>
+
+
+
+<a href="cart.html" class="cart-fab" id="cartFab">
+
+  <span class="cart-icon">🛒</span>
+  
+  <span class="cart-badge" id="cartBadge">0</span>
+  
+</a>  
+</body>
+
+</html>

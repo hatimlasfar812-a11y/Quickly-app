@@ -1,0 +1,481 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Cairo", sans-serif;
+  background: #f7f7f7;
+  color: #222;
+}
+
+.app {
+  max-width: 600px;
+  margin: auto;
+  background: #fff;
+  min-height: 100vh;
+}
+.header {
+  
+  position: fixed;
+  
+  top: 0;
+  
+  left: 50%;
+  
+  transform: translateX(-50%);
+  
+  width: 100%;
+  
+  max-width: 600px;
+  
+  height: 70px;
+  
+  display: flex;
+  
+  justify-content: space-between;
+  
+  align-items: center;
+  
+  padding: 0 20px;
+  
+  z-index: 1000;
+  
+  background: transparent;
+  
+}
+
+.header button {
+  
+  width: 44px;
+  
+  height: 44px;
+  
+  border: none;
+  
+  border-radius: 50%;
+  
+  background: rgba(255, 255, 255, .92);
+  
+  backdrop-filter: blur(10px);
+  
+  box-shadow: 0 4px 15px rgba(0, 0, 0, .15);
+  
+  font-size: 18px;
+  
+  cursor: pointer;
+  
+  transition: .25s;
+  
+}
+
+.header button:active {
+  
+  transform: scale(.92);
+  
+}
+
+#restaurantHero {
+  
+  width: 100%;
+  
+  height: 220px;
+  
+  background: #eee;
+  
+}
+
+#restaurantInfo {
+  
+  padding: 20px;
+  
+}
+
+#restaurantCategories {
+  
+  padding: 0 20px;
+  
+}
+
+#restaurantMenu {
+  
+  padding: 20px;
+  
+}
+
+#cartBar {
+  
+  position: fixed;
+  
+  left: 50%;
+  
+  transform: translateX(-50%);
+  
+  bottom: 20px;
+  
+  width: calc(100% - 40px);
+  
+  max-width: 560px;
+  
+  display: none;
+  
+}
+/*=========================
+RESTAURANT HERO
+=========================*/
+
+.restaurant-cover{
+    position: relative;
+    height: 240px;
+    overflow: hidden;
+}
+
+.cover-image{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.cover-overlay{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        to top,
+        rgba(0,0,0,.35),
+        rgba(0,0,0,0)
+    );
+}
+
+/*=========================
+RESTAURANT INFO CARD
+=========================*/
+#restaurantInfo {
+    position: relative;
+    margin-top: -35px;
+    padding: 0 14px;
+    z-index: 20;
+}
+
+/* =========================
+   LOGO
+========================= */
+
+.restaurant-logo-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: -22px;
+    position: relative;
+    z-index: 30;
+}
+
+.restaurant-logo {
+    width: 68px;
+    height: 68px;
+    margin: -75px auto 0;
+    border-radius: 18px;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, .9);
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+}
+
+/* =========================
+   INFO CARD
+========================= */
+
+.restaurant-info-card {
+    
+    background: rgba(15, 15, 15, .62);
+    
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(5px);
+    
+    border: 1px solid rgba(255, 255, 255, .08);
+    
+    border-radius: 24px;
+    
+    padding: 18px 18px 16px;
+    
+    box-shadow: 0 15px 35px rgba(0, 0, 0, .35);
+    
+    color: #fff;
+    
+}
+
+/* =========================
+   TOP
+========================= */
+
+.restaurant-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.restaurant-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.info-btn {
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.restaurant-main {
+    flex: 1;
+}
+
+.restaurant-top h1 {
+    
+    font-size: 27px;
+    
+    font-weight: 800;
+    
+    letter-spacing: -.4px;
+    
+    margin-bottom: 8px;
+    
+    color: #fff;
+    
+    line-height: 1.1;
+    
+}
+
+.restaurant-rating {
+    
+    display: flex;
+    
+    align-items: center;
+    
+    flex-wrap: wrap;
+    
+    gap: 8px;
+    
+    color: rgba(255, 255, 255, .88);
+    
+    font-size: 15px;
+    
+    font-weight: 600;
+    
+    margin-bottom: 8px;
+    
+}
+
+.restaurant-meta {
+    
+  display:flex;
+  align-items:center;
+  flex-wrap:nowrap;
+  gap:10px;
+  white-space:nowrap;
+  font-size:14px;
+  margin-top: 10px;
+  color: rgba(255, 255, 255, .78);
+  font-weight: 600;
+  scrollbar-width: none;
+    
+}
+
+.restaurant-meta::-webkit-scrollbar {
+    display: none;
+}
+
+.restaurant-meta span {
+    color: rgba(255, 255, 255, .35);
+}
+/* =========================
+   INFO BUTTON
+========================= */
+
+.info-btn {
+    
+    background: rgba(255, 255, 255, .12);
+    
+    color: #fff;
+    
+    border: 1px solid rgba(255, 255, 255, .15);
+    
+    border-radius: 14px;
+    
+    padding: 9px 15px;
+    
+    font-size: 13px;
+    
+    font-weight: 700;
+    
+    cursor: pointer;
+    
+    transition: .25s;
+    
+}
+
+.info-btn:active {
+    
+    transform: scale(.96);
+    
+}
+
+/* =========================
+   HIDE
+========================= */
+
+.restaurant-description {
+    display: none;
+}
+/* =========================
+CATEGORIES
+========================= */
+
+#restaurantCategories {
+    
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 18px 16px;
+    background: #fff;
+    scrollbar-width: none;
+    
+}
+
+#restaurantCategories::-webkit-scrollbar {
+    
+    display: none;
+    
+}
+
+.category-btn {
+    
+    border: none;
+    background: #f2f2f2;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-family: "Cairo", sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: .25s;
+    
+}
+
+.category-btn.active {
+    
+    background: #1565FF;
+    color: #fff;
+    
+}
+#restaurantCategories {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 16px;
+    scrollbar-width: none;
+}
+
+#restaurantCategories::-webkit-scrollbar {
+    display: none;
+}
+
+.category-btn {
+    border: none;
+    background: #f2f2f2;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-family: "Cairo", sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.category-btn.active {
+    background: #1565FF;
+    color: #fff;
+}
+
+.cart-fab {
+    
+    position: fixed;
+    
+    right: 20px;
+    
+    bottom: 20px;
+    
+    width: 60px;
+    
+    height: 60px;
+    
+    background: #ff7a00;
+    
+    border-radius: 50%;
+    
+    display: flex;
+    
+    align-items: center;
+    
+    justify-content: center;
+    
+    text-decoration: none;
+    
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .25);
+    
+    z-index: 9999;
+    
+}
+
+.cart-icon {
+    
+    font-size: 28px;
+    
+}
+
+.cart-badge {
+    
+    position: absolute;
+    
+    top: -5px;
+    
+    right: -5px;
+    
+    width: 24px;
+    
+    height: 24px;
+    
+    border-radius: 50%;
+    
+    background: #e53935;
+    
+    color: #fff;
+    
+    font-size: 13px;
+    
+    font-weight: bold;
+    
+    display: flex;
+    
+    align-items: center;
+    
+    justify-content: center;
+    
+}
+
+.product-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 10000;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.product-sheet {
+    background: #fff;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 24px 24px 0 0;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
+    max-height: 85vh;
+    overflow-y: auto;
+}

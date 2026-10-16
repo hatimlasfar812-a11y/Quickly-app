@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0878D1">
+<title>تتبع الطلب - Quickly</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Lucide Icons (نسخة ثابتة) -->
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<link rel="stylesheet" href="track-order.css">
+</head>
+<body class="no-map">
+
+<!-- Loader -->
+<div id="appLoader" class="app-loader">
+  <div class="spinner"></div>
+  <p>جاري تحميل الطلب...</p>
+</div>
+
+<!-- Header -->
+<header class="header hidden" id="mainHeader">
+  <button id="backBtn" class="back-btn" type="button" aria-label="رجوع">
+    <i data-lucide="arrow-right"></i>
+  </button>
+  <div class="header-title">
+    <h2>تتبع الطلب</h2>
+    <small id="orderNumber">#—</small>
+  </div>
+  <span class="header-spacer" aria-hidden="true"></span>
+</header>
+
+<!-- Map -->
+<div id="map" class="hidden"></div>
+<button id="recenterBtn" class="recenter-btn hidden" type="button" aria-label="إظهار كل النقاط">
+  <i data-lucide="locate-fixed"></i>
+</button>
+
+<!-- Error State -->
+<div id="errorState" class="error-state hidden">
+  <i data-lucide="triangle-alert"></i>
+  <h3>لم نجد هذا الطلب</h3>
+  <p>تأكد من الرابط أو تواصل مع الدعم</p>
+  <a href="my-orders.html" class="btn-primary">طلباتي</a>
+</div>
+
+<!-- Bottom Sheet -->
+<div class="bottom-sheet hidden" id="bottomSheet">
+  <div class="handle" id="sheetHandle" role="button" tabindex="0" aria-label="توسيع"></div>
+
+  <!-- Restaurant Header -->
+  <div class="sheet-header">
+    <div class="restaurant-info">
+      <h3 id="restaurantName">—</h3>
+      <p id="orderStatus" class="status-text">جاري تحميل الحالة...</p>
+    </div>
+    <span id="statusBadge" class="status-badge">
+      <span class="pulse-dot"></span>
+      <span id="statusBadgeText">—</span>
+    </span>
+  </div>
+
+  <!-- Cancelled -->
+  <div class="cancelled-box hidden" id="cancelledBox">
+    <i data-lucide="circle-x"></i>
+    <div>
+      <strong id="cancelledTitle">تم إلغاء الطلب</strong>
+      <small>إذا كان لديك استفسار تواصل مع الدعم</small>
+    </div>
+  </div>
+
+  <!-- ETA Card -->
+  <div class="eta-card" id="etaCard">
+    <div class="eta-icon">
+      <i data-lucide="timer"></i>
+    </div>
+    <div class="eta-info">
+      <span>الوقت المتوقع</span>
+      <strong><span id="etaMinutes">—</span> <span id="etaUnit">دقيقة</span></strong>
+      <small id="etaNote" class="eta-note hidden"></small>
+    </div>
+    <div class="eta-bar">
+      <div class="eta-fill" id="etaFill" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline" id="timeline"></div>
+
+  <!-- Driver Card (يظهر فقط عندما يكون الطلب مع سائق) -->
+  <div class="driver-card hidden" id="driverCard">
+    <div class="driver-avatar" id="driverAvatar">
+      <i data-lucide="bike"></i>
+    </div>
+    <div class="driver-info">
+      <span class="driver-label">السائق</span>
+      <h4 id="driverName">—</h4>
+      <div class="driver-meta">
+        <span class="rating hidden" id="ratingChip">⭐ <strong id="driverRating">—</strong></span>
+        <span id="driverVehicle" class="hidden"></span>
+      </div>
+    </div>
+    <div class="driver-actions">
+      <a href="#" class="icon-action-btn call disabled" id="callBtn" aria-label="اتصل">
+        <i data-lucide="phone"></i>
+      </a>
+      <a href="#" target="_blank" rel="noopener noreferrer" class="icon-action-btn whatsapp disabled" id="whatsappBtn" aria-label="واتساب">
+        <i data-lucide="message-circle"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- Restaurant / Store Card -->
+  <div class="address-card hidden" id="placeCard">
+    <div class="address-header">
+      <i data-lucide="store"></i>
+      <h4>طلبت من</h4>
+    </div>
+    <p id="placeName">—</p>
+    <a id="placeLink" href="#" target="_blank" rel="noopener noreferrer" class="place-link hidden">
+      <i data-lucide="navigation"></i>
+      <span>عرض موقع المطعم في الخرائط</span>
+    </a>
+  </div>
+
+  <!-- Address Card -->
+  <div class="address-card">
+    <div class="address-header">
+      <i data-lucide="map-pin"></i>
+      <h4>عنوان التوصيل</h4>
+    </div>
+    <p id="deliveryAddress">—</p>
+  </div>
+
+  <!-- Delivered Actions -->
+  <div class="delivered-actions hidden" id="deliveredActions">
+    <button type="button" class="btn-rate" id="rateBtn">
+      <i data-lucide="star"></i>
+      <span>قيّم تجربتك</span>
+    </button>
+    <a href="food.html" class="btn-secondary">
+      <i data-lucide="rotate-ccw"></i>
+      <span>اطلب مرة أخرى</span>
+    </a>
+  </div>
+
+</div>
+
+<!-- Rating Modal -->
+<div id="ratingModal" class="modal-overlay hidden">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="ratingTitle">
+    <div class="modal-header">
+      <h3 id="ratingTitle">قيّم تجربتك</h3>
+      <button type="button" class="close-modal" data-close-rating aria-label="إغلاق">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-question">كيف كانت تجربتك مع الطلب؟</p>
+      <div class="stars-row" id="starsRow">
+        <button type="button" class="star-btn" data-value="1" aria-label="1"><i data-lucide="star"></i></button>
+        <button type="button" class="star-btn" data-value="2" aria-label="2"><i data-lucide="star"></i></button>
+        <button type="button" class="star-btn" data-value="3" aria-label="3"><i data-lucide="star"></i></button>
+        <button type="button" class="star-btn" data-value="4" aria-label="4"><i data-lucide="star"></i></button>
+        <button type="button" class="star-btn" data-value="5" aria-label="5"><i data-lucide="star"></i></button>
+      </div>
+      <p class="rating-label" id="ratingLabel">اختر تقييماً</p>
+      <textarea id="ratingComment" placeholder="شاركنا تجربتك (اختياري)" rows="3" maxlength="300"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" data-close-rating>إلغاء</button>
+      <button type="button" class="btn-save" id="submitRatingBtn">
+        <i data-lucide="send"></i>
+        <span>إرسال</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+<!-- Confetti -->
+<div id="confettiContainer" class="confetti-container"></div>
+
+<script type="module" src="track-order.js"></script>
+</body>
+</html>

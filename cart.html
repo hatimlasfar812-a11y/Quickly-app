@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Cart</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="cart.css">
+</head>
+
+<body>
+  
+  <header class="cart-header">
+    <a href="restaurant.html" class="back-btn" aria-label="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    
+    <div class="header-title">
+      <h2 id="pageTitle">Your Cart</h2>
+      <span id="vendorName" class="vendor-name"></span>
+    </div>
+    
+    <button id="clearBtn" class="clear-btn" hidden>
+      <i class="fa-regular fa-trash-can"></i>
+      <span id="clearLabel">Clear</span>
+    </button>
+  </header>
+  
+  <div id="vendorConflict" class="conflict" hidden></div>
+  
+  <main id="cartItems" aria-live="polite"></main>
+  
+  <footer class="cart-footer" id="cartFooter">
+    <div class="cart-total">
+      <div>
+        <span id="subtotalLabel">Subtotal</span>
+        <small id="itemCount"></small>
+      </div>
+      <strong id="cartTotal">0.00 DH</strong>
+    </div>
+    
+    <p class="fees-note" id="feesNote"></p>
+    
+    <button id="checkoutBtn">Go to checkout</button>
+  </footer>
+  
+  <script type="module" src="cart-page.js"></script>
+  
+</body>
+
+</html>

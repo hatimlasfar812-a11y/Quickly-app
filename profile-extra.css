@@ -1,0 +1,187 @@
+/* =====================================================
+   PROFILE — EXTRA (Header + Track Order + Toast + Icons)
+===================================================== */
+
+/* ===== Sub Header ===== */
+.sub-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #0878D1, #055a9e);
+  color: #fff;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 4px 20px rgba(8, 120, 209, 0.25);
+}
+
+.sub-header-bar h2 {
+  font-size: 17px;
+  font-weight: 900;
+  color: #fff;
+  flex: 1;
+  text-align: center;
+}
+
+.back-nav-btn,
+.header-spacer {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.back-nav-btn {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.back-nav-btn:hover { background: rgba(255, 255, 255, 0.25); }
+
+.back-nav-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.2;
+}
+
+.header-spacer { display: block; }
+
+/* ===== Lucide icons defaults ===== */
+svg.lucide {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+  stroke: currentColor;
+  fill: none;
+  flex-shrink: 0;
+}
+
+.m-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.2;
+}
+
+.profile-menu-item > svg,
+.menu-item-right svg {
+  width: 18px;
+  height: 18px;
+  stroke: #94A3B8;
+}
+
+.logout-action-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+/* ===== VIP Badge ===== */
+.vip-badge-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.vip-badge-tag svg {
+  width: 11px;
+  height: 11px;
+  stroke-width: 2.5;
+  fill: #fff;
+}
+
+/* ===== Active Order Badge ===== */
+.active-order-badge {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0878D1, #055a9e);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(8, 120, 209, 0.35);
+}
+
+.active-order-badge.hidden { display: none !important; }
+
+.active-order-badge.pulse-badge { animation: badgePulse 2s infinite; }
+
+@keyframes badgePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(8, 120, 209, 0.35);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 4px 20px rgba(8, 120, 209, 0.6);
+  }
+}
+
+/* ===== Toast ===== */
+.toast-container {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  width: calc(100% - 40px);
+  max-width: 400px;
+}
+
+.toast {
+  padding: 13px 18px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  box-shadow: 0 20px 48px rgba(15, 20, 32, 0.15);
+  animation: toastSlideIn 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+  color: #fff;
+}
+
+.toast svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.5;
+  flex-shrink: 0;
+}
+
+.toast.success { background: linear-gradient(135deg, #10B981, #059669); }
+.toast.error { background: linear-gradient(135deg, #EF4444, #DC2626); }
+.toast.info { background: linear-gradient(135deg, #0878D1, #055a9e); }
+
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .active-order-badge.pulse-badge,
+  .toast,
+  .modal-card-sheet { animation: none; }
+}

@@ -1,0 +1,229 @@
+rules_version = '2';
+
+// =====================================================================
+//  QUICKLY — Firestore Security Rules (V5)
+//  Colle ce fichier dans: Firebase Console > Firestore Database > Rules > Publish
+//  Les collections non listées ici sont REFUSÉES par défaut.
+// =====================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------------------------------------------------------------
+    //  Fonctions utilitaires
+    // ---------------------------------------------------------------
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function myUser() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function hasUserDoc() {
+      return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    // Admin = users/{uid}.role == 'admin'  (même vérification que admin.js)
+    function isAdmin() {
+      return hasUserDoc() && myUser().role == 'admin';
+    }
+
+    // Livreur = users/{uid}.role == 'driver' avec driverDocId (créé par l'admin)
+    function isDriver() {
+      return hasUserDoc() && myUser().role == 'driver' && myUser().get('driverDocId', null) != null;
+    }
+
+    function myDriverId() {
+      return myUser().driverDocId;
+    }
+
+    // ---------------------------------------------------------------
+    //  Données publiques (lecture pour tous, écriture admin seulement)
+    // ---------------------------------------------------------------
+    match /restaurants/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /stores/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /foodCategories/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /menuOptions/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /offers/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /banners/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /settings/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /hypermarkets/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /hypermarket_products/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ---------------------------------------------------------------
+    //  Admin seulement
+    // ---------------------------------------------------------------
+    match /coupons/{couponId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /zones/{zoneId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /sync_logs/{logId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Journal d'audit : on peut ajouter, jamais modifier ni supprimer
+    match /admin_audit/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    // ---------------------------------------------------------------
+    //  Utilisateurs
+    // ---------------------------------------------------------------
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+
+      // Création : un client ne peut JAMAIS se donner un rôle (admin/driver) ni des points
+      allow create: if isAdmin()
+        || (isOwner(userId)
+            && (!('role' in request.resource.data) || request.resource.data.role == 'customer')
+            && (!('points' in request.resource.data) || request.resource.data.points == 0));
+
+      // Modification : rôle et liens livreur figés ; les points peuvent seulement baisser (dépense)
+      allow update: if isAdmin()
+        || (isOwner(userId)
+            && request.resource.data.get('role', null) == resource.data.get('role', null)
+            && request.resource.data.get('driverDocId', null) == resource.data.get('driverDocId', null)
+            && request.resource.data.get('driverId', null) == resource.data.get('driverId', null)
+            && (!('points' in request.resource.data)
+                || request.resource.data.points <= resource.data.get('points', 0)));
+
+      allow delete: if isAdmin();
+
+      match /addresses/{addressId} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
+    }
+
+    // Historique des points de fidélité
+    match /pointTransactions/{transId} {
+      allow read: if signedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // ---------------------------------------------------------------
+    //  Commandes
+    // ---------------------------------------------------------------
+    match /orders/{orderId} {
+      // Le client voit ses commandes, le livreur celles qui lui sont assignées, l'admin tout
+      allow read: if signedIn() && (
+        resource.data.uid == request.auth.uid
+        || isAdmin()
+        || (isDriver() && resource.data.get('driverId', null) == myDriverId())
+      );
+
+      // Le client crée une commande à son nom, au statut "pending" uniquement
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.status in ['pending', 'Pending']
+        && request.resource.data.items is list
+        && request.resource.data.items.size() > 0
+        && request.resource.data.items.size() <= 50
+        && request.resource.data.total is number
+        && request.resource.data.total >= 0;
+
+      allow update: if isAdmin()
+        // Le client peut seulement marquer sa commande comme "notée"
+        || (signedIn()
+            && resource.data.uid == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reviewed', 'reviewedAt']))
+        // Le livreur assigné peut mettre à jour statut/position (à vérifier avec l'app livreur)
+        || (isDriver()
+            && resource.data.get('driverId', null) == myDriverId()
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                 'status', 'updatedAt', 'driverLocation', 'driverLocationUpdatedAt',
+                 'acceptedAt', 'pickedUpAt', 'picked_upAt', 'onTheWayAt', 'on_the_wayAt', 'deliveredAt'
+               ]));
+
+      allow delete: if isAdmin();
+    }
+
+    // ---------------------------------------------------------------
+    //  Livreurs
+    // ---------------------------------------------------------------
+    // get : tout utilisateur connecté (la page de suivi lit le livreur de SA commande).
+    // list : admin seulement (impossible de télécharger la liste de tous les livreurs).
+    // ⚠ Le document contient cinImage (carte d'identité) : voir README "Sécurité".
+    match /drivers/{driverId} {
+      allow get: if signedIn();
+      allow list: if isAdmin();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin()
+        || (isDriver()
+            && driverId == myDriverId()
+            && !request.resource.data.diff(resource.data).affectedKeys()
+                 .hasAny(['adminStatus', 'cinImage', 'uid', 'email', 'driverId', 'name']));
+    }
+
+    // Avis sur les livreurs : id du document = id de la commande (un seul avis par commande)
+    match /driver_reviews/{orderId} {
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.customerId == request.auth.uid)
+        || (isDriver() && resource.data.get('driverId', null) == myDriverId());
+
+      allow create: if signedIn()
+        && request.resource.data.customerId == request.auth.uid
+        && request.resource.data.rating is number
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && exists(/databases/$(database)/documents/orders/$(orderId))
+        && get(/databases/$(database)/documents/orders/$(orderId)).data.uid == request.auth.uid
+        && get(/databases/$(database)/documents/orders/$(orderId)).data.status in ['delivered', 'Delivered'];
+
+      allow update, delete: if isAdmin();
+    }
+
+    // Gains des livreurs
+    match /driver_earnings/{earningId} {
+      allow read: if isAdmin()
+        || (isDriver() && resource.data.get('driverId', null) == myDriverId());
+      allow write: if isAdmin();
+    }
+  }
+}

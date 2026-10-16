@@ -1,0 +1,141 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Cairo", sans-serif;
+}
+
+body {
+  background: #f6f7fb;
+  padding: 90px 18px 20px;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 0 18px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, .08);
+  z-index: 1000;
+}
+
+.header button {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: #f3f3f3;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.header h2 {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+#ordersContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.order-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .07);
+  cursor: pointer;
+  transition: .25s;
+}
+
+.order-card:hover {
+  transform: translateY(-3px);
+}
+
+.order-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.restaurant-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: #222;
+}
+
+.order-number {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 12px;
+}
+
+.status {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.pending {
+  background: #FFF3CD;
+  color: #B8860B;
+}
+
+.preparing {
+  background: #E3F2FD;
+  color: #1565C0;
+}
+
+.onway {
+  background: #E8F5E9;
+  color: #2E7D32;
+}
+
+.delivered {
+  background: #D4EDDA;
+  color: #198754;
+}
+
+.cancelled {
+  background: #F8D7DA;
+  color: #C62828;
+}
+
+.price {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ff7a00;
+  margin-bottom: 12px;
+}
+
+.date {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 15px;
+}
+
+.view-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  color: #ff7a00;
+}
+
+.empty {
+  text-align: center;
+  margin-top: 80px;
+  color: #888;
+  font-size: 18px;
+}

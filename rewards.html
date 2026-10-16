@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Quickly - Mes Récompenses & Fidélité</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- SUB HEADER -->
+    <header class="sub-header-bar">
+      <a href="index.html" class="back-nav-btn" aria-label="Retour"><i class="fa-solid fa-arrow-left"></i></a>
+      <h2>Fidélité & Récompenses</h2>
+    </header>
+
+    <main class="main-content-scroll" style="padding: 16px;">
+
+      <!-- HERO POINTS CARD -->
+      <div class="rewards-hero-card">
+        <div class="rewards-hero-icon"><i class="fa-solid fa-crown"></i></div>
+        <div class="rewards-hero-info">
+          <span>Solde de Points Actuel</span>
+          <h1 id="userPointsValue">0 pts</h1>
+          <p>Commandez régulièrement pour débloquer le niveau VIP</p>
+        </div>
+      </div>
+
+      <!-- TIER PROGRESS CARD -->
+      <div class="tier-progress-card">
+        <div class="tier-labels">
+          <span id="currentTierName">Niveau Bronze</span>
+          <span id="nextTierTarget">Prochain: Argent (500 pts)</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-bar" id="tierProgressBar" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- AVAILABLE REWARDS SECTION -->
+      <div class="section-title-bar" style="margin-top: 15px;">
+        <h2>Récompenses Disponibles</h2>
+      </div>
+      <div class="rewards-cards-list">
+        
+        <div class="reward-row-item">
+          <div class="r-icon-box delivery"><i class="fa-solid fa-motorcycle"></i></div>
+          <div class="r-details">
+            <h4>Livraison Gratuite</h4>
+            <p>Valable sur votre prochaine commande</p>
+            <span class="cost-pill">50 pts</span>
+          </div>
+          <button class="btn-redeem-action" onclick="redeemReward('Livraison Gratuite', 50)">Échanger</button>
+        </div>
+
+        <div class="reward-row-item">
+          <div class="r-icon-box voucher"><i class="fa-solid fa-ticket"></i></div>
+          <div class="r-details">
+            <h4>Bon d'achat 20 MAD</h4>
+            <p>À utiliser dans tous les restaurants</p>
+            <span class="cost-pill">100 pts</span>
+          </div>
+          <button class="btn-redeem-action" onclick="redeemReward('Bon d\'achat 20 MAD', 100)">Échanger</button>
+        </div>
+
+        <div class="reward-row-item">
+          <div class="r-icon-box burger"><i class="fa-solid fa-burger"></i></div>
+          <div class="r-details">
+            <h4>Menu Burger Offert</h4>
+            <p>Offert par nos restaurants partenaires</p>
+            <span class="cost-pill">200 pts</span>
+          </div>
+          <button class="btn-redeem-action" onclick="redeemReward('Menu Burger Offert', 200)">Échanger</button>
+        </div>
+
+      </div>
+
+      <!-- POINTS HISTORY SECTION -->
+      <div class="section-title-bar" style="margin-top: 20px;">
+        <h2>Historique des transactions</h2>
+      </div>
+      <div class="points-history-container" id="pointsHistoryList">
+        <div class="history-row-card">
+          <div class="h-text">
+            <strong>Bonus d'inscription</strong>
+            <small>Bienvenue sur Quickly</small>
+          </div>
+          <span class="h-pts plus">+20 pts</span>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav class="bottom-nav-bar">
+      <a href="index.html" class="nav-bar-item">
+        <i class="fa-solid fa-house-chimney"></i>
+        <span>Accueil</span>
+      </a>
+      <a href="search.html" class="nav-bar-item">
+        <i class="fa-solid fa-compass"></i>
+        <span>Explorer</span>
+      </a>
+      <a href="cart.html" class="nav-bar-item cart-highlight-item">
+        <div class="cart-icon-container">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="cart-badge-counter" id="cartBadgeCount" style="display:none;">0</span>
+        </div>
+        <span>Panier</span>
+      </a>
+      <a href="profile.html" class="nav-bar-item">
+        <i class="fa-solid fa-circle-user"></i>
+        <span>Profil</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <script type="module">
+    import { db, auth } from "./firebase.js";
+    import { doc, getDoc, updateDoc, increment, collection, addDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const userRef = doc(db, "users", user.uid);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            const data = userSnap.data();
+            const pts = data.points || 20;
+            document.getElementById("userPointsValue").textContent = `${pts} pts`;
+            const percent = Math.min((pts / 500) * 100, 100);
+            document.getElementById("tierProgressBar").style.width = `${percent}%`;
+          }
+          
+          // Load points history from Firestore
+          const histQuery = query(collection(db, "pointTransactions"), where("userId", "==", user.uid));
+          const histSnap = await getDocs(histQuery);
+          const historyList = document.getElementById("pointsHistoryList");
+          if (!histSnap.empty) {
+            let hHtml = "";
+            histSnap.forEach(hDoc => {
+              const hData = hDoc.data();
+              const isPlus = hData.amount > 0;
+              hHtml += `
+                <div class="history-row-card">
+                  <div class="h-text">
+                    <strong>${hData.title || 'Transaction'}</strong>
+                    <small>${new Date(hData.createdAt?.toDate?.() || Date.now()).toLocaleDateString()}</small>
+                  </div>
+                  <span class="h-pts ${isPlus ? 'plus' : 'minus'}">${isPlus ? '+' : ''}${hData.amount} pts</span>
+                </div>
+              `;
+            });
+            historyList.innerHTML = hHtml;
+          }
+        } catch (e) {
+          console.error("Error loading user points:", e);
+        }
+      }
+    });
+
+    window.redeemReward = async function(rewardName, cost) {
+      if (!auth.currentUser) {
+        alert("Veuillez vous connecter pour échanger vos points.");
+        window.location.href = "profile.html";
+        return;
+      }
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        const currentPoints = userSnap.data().points || 0;
+        if (currentPoints >= cost) {
+          try {
+            await updateDoc(userRef, { points: increment(-cost) });
+            await addDoc(collection(db, "pointTransactions"), {
+              userId: auth.currentUser.uid,
+              title: `Échange: ${rewardName}`,
+              amount: -cost,
+              createdAt: serverTimestamp()
+            });
+            alert(`Félicitations ! Vous avez échangé ${cost} pts contre : ${rewardName}`);
+            location.reload();
+          } catch(err) {
+            console.error("Redeem error:", err);
+            alert("Erreur lors de l'échange.");
+          }
+        } else {
+          alert("Solde insuffisant pour cette récompense !");
+        }
+      }
+    }
+  </script>
+</body>
+</html>

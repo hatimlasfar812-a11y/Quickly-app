@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>One Call - Admin</title>
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+
+<!-- Leaflet Map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="admin.css?v=5">
+</head>
+<body>
+
+<div id="appLoader" class="app-loader">
+    <div class="loader-rings"><span></span><span></span><span></span></div>
+    <p>جاري التحميل...</p>
+</div>
+
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- LOGIN SCREEN -->
+<div id="unauthorizedScreen" class="unauthorized-screen hidden">
+    <div class="auth-card">
+        <div class="auth-brand">
+            <div class="brand-orb"><i data-lucide="zap"></i></div>
+            <h1>One Call</h1>
+            <p>Admin Panel</p>
+        </div>
+        <form id="adminLoginForm">
+            <div class="form-group floating">
+                <input type="email" id="loginEmail" placeholder=" " required>
+                <label>البريد الإلكتروني</label>
+                <i data-lucide="mail" class="input-icon"></i>
+            </div>
+            <div class="form-group floating">
+                <input type="password" id="loginPassword" placeholder=" " required>
+                <label>كلمة المرور</label>
+                <i data-lucide="lock" class="input-icon"></i>
+            </div>
+            <button type="submit" class="btn-primary btn-lg w-100">
+                <i data-lucide="shield-check"></i> تسجيل الدخول
+            </button>
+        </form>
+        <a href="#" id="forgotPasswordLink" class="auth-link">نسيت كلمة المرور؟</a>
+        <div id="loginError" class="error-msg hidden"></div>
+    </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="adminApp" class="admin-app hidden">
+
+<aside class="sidebar" id="sidebar">
+    <div class="brand">
+        <div class="brand-logo"><i data-lucide="zap"></i></div>
+        <div class="brand-title">
+            <h2>Quickly</h2>
+            <span>Admin Panel</span>
+        </div>
+        <div class="brand-status"><span class="pulse-dot"></span></div>
+    </div>
+
+    <nav class="nav-menu">
+        <div class="nav-group-title">الرئيسية</div>
+        <button class="nav-item active" data-tab="dashboard">
+            <i data-lucide="layout-dashboard"></i><span>مركز القيادة</span>
+        </button>
+
+        <div class="nav-group-title">الأقسام</div>
+        <button class="nav-item" data-tab="restaurants">
+            <i data-lucide="utensils"></i><span>المطاعم</span>
+            <span class="nav-badge" id="badgeRestaurants">0</span>
+        </button>
+        <button class="nav-item" data-tab="shops">
+            <i data-lucide="shopping-bag"></i><span>المتاجر</span>
+            <span class="nav-badge" id="badgeShops">0</span>
+        </button>
+        <button class="nav-item" data-tab="groceries">
+            <i data-lucide="shopping-cart"></i><span>الهايبرماركت</span>
+        </button>
+        <button class="nav-item" data-tab="parapharmacy">
+            <i data-lucide="heart-pulse"></i><span>Para & Beauty</span>
+        </button>
+        <button class="nav-item" data-tab="package">
+            <i data-lucide="package"></i><span>الطرود</span>
+        </button>
+
+        <div class="nav-group-title">الأسطول</div>
+        <button class="nav-item" data-tab="drivers">
+            <i data-lucide="bike"></i><span>السائقون</span>
+            <span class="nav-badge danger" id="pendingDriversBadge">0</span>
+        </button>
+        <button class="nav-item" data-tab="top-drivers">
+            <i data-lucide="trophy"></i><span>لوحة الشرف</span>
+        </button>
+        <button class="nav-item" data-tab="driver-map">
+            <i data-lucide="map-pin"></i><span>الخريطة</span>
+        </button>
+        <button class="nav-item" data-tab="reviews">
+            <i data-lucide="star"></i><span>التقييمات</span>
+        </button>
+        <button class="nav-item" data-tab="earnings">
+    <i data-lucide="wallet"></i>
+    <span>الأرباح والدفعات</span>
+</button>
+<button class="nav-item" data-tab="analytics">
+    <i data-lucide="trending-up"></i>
+    <span>التحليلات</span>
+</button>
+
+        <div class="nav-group-title">العمليات</div>
+        <button class="nav-item" data-tab="orders">
+            <i data-lucide="receipt"></i><span>الطلبات</span>
+            <span class="nav-badge danger" id="pendingOrdersBadge">0</span>
+        </button>
+        <button class="nav-item" data-tab="offers">
+            <i data-lucide="megaphone"></i><span>العروض</span>
+        </button>
+        <button class="nav-item" data-tab="coupons">
+            <i data-lucide="ticket-percent"></i><span>الكوبونات</span>
+        </button>
+        <button class="nav-item" data-tab="zones">
+            <i data-lucide="map"></i><span>مناطق التوصيل</span>
+        </button>
+
+        <div class="nav-group-title">النظام</div>
+        <button class="nav-item" data-tab="status">
+            <i data-lucide="server"></i><span>حالة الخدمات</span>
+        </button>
+        <button class="nav-item" data-tab="reports">
+            <i data-lucide="bar-chart-3"></i><span>التقارير</span>
+        </button>
+        <button class="nav-item" data-tab="audit">
+            <i data-lucide="clipboard-list"></i><span>سجل الإجراءات</span>
+        </button>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="admin-chip">
+            <div class="admin-avatar"><i data-lucide="user-shield"></i></div>
+            <div class="admin-info">
+                <strong id="adminNameDisplay">المسؤول</strong>
+                <small id="adminEmailDisplay">admin@onecall.ma</small>
+            </div>
+        </div>
+        <button id="logoutBtn" class="btn-icon-logout" title="خروج">
+            <i data-lucide="log-out"></i>
+        </button>
+    </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="main-wrapper">
+
+<header class="top-header">
+    <button class="mobile-toggle" id="mobileToggle">
+        <i data-lucide="menu"></i>
+    </button>
+
+    <div class="breadcrumb" id="breadcrumb">
+        <i data-lucide="layout-dashboard"></i>
+        <span>مركز القيادة</span>
+    </div>
+
+    <div class="global-search">
+        <i data-lucide="search"></i>
+        <input type="text" id="globalSearchInput" placeholder="بحث...">
+        <div id="searchResultsDropdown" class="search-results-dropdown hidden"></div>
+    </div>
+
+    <div class="header-actions">
+        <button class="header-btn" id="darkModeToggle" title="الوضع الليلي">
+            <i data-lucide="moon"></i>
+        </button>
+        <div class="header-user">
+            <span class="pulse-dot"></span>
+            <span>Live</span>
+        </div>
+    </div>
+</header>
+
+<main class="content-area">
+
+<!-- DASHBOARD -->
+<section id="tab-dashboard" class="tab-pane active">
+    <div class="page-hero">
+        <div>
+            <h1>مركز القيادة</h1>
+            <p>نظرة شاملة على أداء النظام</p>
+        </div>
+        <div class="hero-actions">
+            <button class="btn-outline btn-sm" onclick="refreshDashboard()">
+                <i data-lucide="refresh-cw"></i> تحديث
+            </button>
+            <button class="btn-primary btn-sm" onclick="exportOrdersCSV()">
+                <i data-lucide="download"></i> تصدير
+            </button>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card stat-primary">
+            <div class="stat-head">
+                <span class="stat-label">مبيعات اليوم</span>
+            </div>
+            <div class="stat-value" id="statTodaySales">0.00 د.م</div>
+            <div class="stat-foot"><i data-lucide="coins"></i> اليوم</div>
+        </div>
+        <div class="stat-card stat-orange">
+            <div class="stat-head"><span class="stat-label">طلبات اليوم</span></div>
+            <div class="stat-value" id="statTodayOrders">0</div>
+            <div class="stat-foot"><i data-lucide="receipt"></i> طلب</div>
+        </div>
+        <div class="stat-card stat-green">
+            <div class="stat-head"><span class="stat-label">الطلبات النشطة</span></div>
+            <div class="stat-value" id="statActiveOrders">0</div>
+            <div class="stat-foot"><i data-lucide="loader"></i> قيد التنفيذ</div>
+        </div>
+        <div class="stat-card stat-purple">
+            <div class="stat-head"><span class="stat-label">السائقون</span></div>
+            <div class="stat-value" id="statOnlineDrivers">0</div>
+            <div class="stat-foot"><i data-lucide="bike"></i> متصلون</div>
+        </div>
+        <div class="stat-card stat-blue">
+            <div class="stat-head"><span class="stat-label">المطاعم</span></div>
+            <div class="stat-value" id="statTotalRestaurants">0</div>
+            <div class="stat-foot"><i data-lucide="utensils"></i> مسجل</div>
+        </div>
+        <div class="stat-card stat-teal">
+            <div class="stat-head"><span class="stat-label">المتاجر</span></div>
+            <div class="stat-value" id="statActiveStores">0</div>
+            <div class="stat-foot"><i data-lucide="shopping-bag"></i> نشط</div>
+        </div>
+    </div>
+
+    <div class="card-box">
+        <div class="card-header">
+            <h3>نشاط الطلبات (24 ساعة)</h3>
+        </div>
+        <div class="chart-container-lg"><canvas id="ordersMiniChart"></canvas></div>
+    </div>
+
+    <div class="card-box mt-4">
+        <div class="card-header">
+            <h3>أحدث الطلبات</h3>
+            <button class="btn-sm btn-outline" onclick="switchTab('orders')">عرض الكل</button>
+        </div>
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>الطلب</th><th>العميل</th><th>المتجر</th><th>المبلغ</th><th>الحالة</th></tr></thead>
+                <tbody id="dashRecentOrdersTable"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- RESTAURANTS -->
+<section id="tab-restaurants" class="tab-pane">
+    <div class="page-hero">
+        <div><h1>إدارة المطاعم</h1></div>
+        <button class="btn-primary" onclick="openAddRestaurantModal()">
+            <i data-lucide="plus"></i> إضافة مطعم
+        </button>
+    </div>
+    <div class="toolbar-advanced">
+        <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="searchRestaurantInput" placeholder="بحث...">
+        </div>
+    </div>
+    <div class="card-box">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>المطعم</th><th>التصنيف</th><th>الهاتف</th><th>التوصيل</th><th>التقييم</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                <tbody id="restaurantsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- SHOPS -->
+<section id="tab-shops" class="tab-pane">
+    <div class="page-hero">
+        <div><h1>المتاجر</h1><p>بوتيكات فردية</p></div>
+        <button class="btn-primary" onclick="openAddStoreModal('shops')">
+            <i data-lucide="plus"></i> إضافة متجر
+        </button>
+    </div>
+    <div class="category-tabs">
+        <button class="cat-tab active" data-cat="all">الكل</button>
+        <button class="cat-tab" data-cat="Fashion">أزياء</button>
+        <button class="cat-tab" data-cat="Electronics">إلكترونيات</button>
+        <button class="cat-tab" data-cat="Perfume">عطور</button>
+        <button class="cat-tab" data-cat="Accessories">إكسسوارات</button>
+    </div>
+    <div class="card-box">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>المتجر</th><th>الفئة</th><th>الهاتف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                <tbody id="shopsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- GROCERIES -->
+<section id="tab-groceries" class="tab-pane">
+    <div class="page-hero hero-hyper">
+        <div>
+            <h1>الهايبرماركت</h1>
+            <p>سلاسل كبرى مع جلب تلقائي</p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn-secondary" onclick="openSyncLogModal()"><i data-lucide="history"></i> سجل المزامنة</button>
+            <button class="btn-secondary" onclick="openSyncSettingsModal()"><i data-lucide="settings"></i> المزامنة</button>
+            <button class="btn-primary" onclick="openAddHypermarketModal()">
+                <i data-lucide="plus"></i> إضافة سلسلة
+            </button>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card stat-primary">
+            <div class="stat-head"><span class="stat-label">السلاسل</span></div>
+            <div class="stat-value" id="hyperChainsCount">0</div>
+        </div>
+        <div class="stat-card stat-green">
+            <div class="stat-head"><span class="stat-label">المنتجات</span></div>
+            <div class="stat-value" id="hyperProductsTotal">0</div>
+        </div>
+        <div class="stat-card stat-blue">
+            <div class="stat-head"><span class="stat-label">آخر مزامنة</span></div>
+            <div class="stat-value" id="hyperLastSync">—</div>
+        </div>
+    </div>
+
+    <div class="hyper-grid" id="hyperGrid"></div>
+
+    <div class="card-box mt-4">
+        <div class="card-header">
+            <h3>المنتجات المُجلبة</h3>
+            <div class="search-box small">
+                <i data-lucide="search"></i>
+                <input type="text" id="searchHyperProduct" placeholder="بحث منتج...">
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr><th>المنتج</th><th>السلسلة</th><th>الباركود</th><th>السعر</th><th>الحالة</th><th>إجراءات</th></tr>
+                </thead>
+                <tbody id="hyperProductsTableBody">
+                    <tr><td colspan="6" class="text-center empty-state"><p>لا توجد منتجات.</p></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- PARA -->
+<section id="tab-parapharmacy" class="tab-pane">
+    <div class="page-hero">
+        <div><h1>Para & Beauty</h1></div>
+        <button class="btn-primary" onclick="openAddStoreModal('parapharmacy')">
+            <i data-lucide="plus"></i> إضافة
+        </button>
+    </div>
+    <div class="card-box">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>المتجر</th><th>الفئة</th><th>الهاتف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                <tbody id="paraTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- PACKAGES -->
+<section id="tab-package" class="tab-pane">
+    <div class="page-hero"><div><h1>الطرود</h1></div></div>
+    <div class="card-box">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>#</th><th>المرسل/المستلم</th><th>السائق</th><th>السعر</th><th>الحالة</th><th>إجراء</th></tr></thead>
+                <tbody id="packagesTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- DRIVERS -->
+<section id="tab-drivers" class="tab-pane">
+    <div class="page-hero">
+        <div><h1>إدارة السائقين</h1></div>
+        <div class="hero-actions">
+            <button class="btn-secondary" onclick="openCreateAuthModal()">
+                <i data-lucide="key"></i> إنشاء حساب
+            </button>
+            <button class="btn-primary" onclick="openAddDriverModal()">
+                <i data-lucide="user-plus"></i> إضافة سائق
+            </button>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon blue"><i data-lucide="users"></i></div><div class="stat-data"><h3>الإجمالي</h3><span class="stat-value" id="drvStatTotal">0</span></div></div>
+        <div class="stat-card"><div class="stat-icon green"><i data-lucide="wifi"></i></div><div class="stat-data"><h3>متصلون</h3><span class="stat-value" id="drvStatOnline">0</span></div></div>
+        <div class="stat-card"><div class="stat-icon primary"><i data-lucide="circle-check"></i></div><div class="stat-data"><h3>متاحون</h3><span class="stat-value" id="drvStatAvailable">0</span></div></div>
+        <div class="stat-card"><div class="stat-icon yellow"><i data-lucide="truck"></i></div><div class="stat-data"><h3>مشغولون</h3><span class="stat-value" id="drvStatBusy">0</span></div></div>
+        <div class="stat-card"><div class="stat-icon orange"><i data-lucide="power"></i></div><div class="stat-data"><h3>غير متصلين</h3><span class="stat-value" id="drvStatOffline">0</span></div></div>
+        <div class="stat-card"><div class="stat-icon red"><i data-lucide="ban"></i></div><div class="stat-data"><h3>موقوفون</h3><span class="stat-value" id="drvStatSuspended">0</span></div></div>
+    </div>
+
+    <div class="filter-bar">
+        <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="searchDriverInput" placeholder="بحث...">
+        </div>
+        <select id="filterDriverStatus" class="filter-select">
+            <option value="all">كل الحالات</option>
+            <option value="online_available">متاح</option>
+            <option value="online_busy">مشغول</option>
+            <option value="offline">غير متصل</option>
+            <option value="suspended">موقوف</option>
+        </select>
+        <select id="filterDriverVerification" class="filter-select">
+            <option value="all">التوثيق</option>
+            <option value="verified">موثّق</option>
+            <option value="pending">قيد المراجعة</option>
+        </select>
+    </div>
+
+    <div class="card-box">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>السائق</th><th>ID</th><th>الهاتف</th><th>المركبة</th><th>الحالة</th><th>التوثيق</th><th>التقييم</th><th>إجراءات</th></tr></thead>
+                <tbody id="driversTableBody"></tbody>
+            </table>
+        </div>
+        <div id="driversPagination"></div>
+    </div>
+</section>
+
+<!-- TOP DRIVERS -->
+<section id="tab-top-drivers" class="tab-pane">
+    <div class="page-hero">
+        <div><h1>لوحة الشرف</h1></div>
+        <div class="leaderboard-tabs">
+            <button class="lb-tab active" data-period="week">أسبوع</button>
+            <button class="lb-tab" data-period="month">شهر</button>
+            <button class="lb-tab" data-period="all">الكل</button>
+        </div>
+    </div>
+    <div class="podium-container" id="podiumContainer"></div>
+</section>
+
+<!-- MAP -->
+<section id="tab-driver-map" class="tab-pane">
+    <div class="page-hero"><div><h1>الخريطة الحية</h1></div></div>
+    <div class="card-box" style="padding:0;">
+        <div id="driversMap" style="height:500px; border-radius:12px;"></div>
+    </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="tab-reviews" class="tab-pane">
+    <div class="page-hero"><div><h1>التقييمات</h1></div></div>
+    <div class="card-box">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>التاريخ</th><th>السائق</th><th>العميل</th><th>التقييم</th><th>التعليق</th></tr></thead>
+                <tbody id="reviewsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ORDERS -->
+<!-- ═══════════════ ORDERS ═══════════════ -->
+                <section id="tab-orders" class="tab-pane">
+                    <div class="page-hero">
+                        <div>
+                            <h1>الطلبات</h1>
+                            <p>متابعة وتحديث حالات الطلبات</p>
+                        </div>
+                        <div class="hero-actions">
+                            <button class="btn-primary btn-sm" onclick="autoAssignAllPending()" style="background:linear-gradient(135deg,#10B981,#059669);">
+                                <i data-lucide="zap"></i> تعيين تلقائي للكل
+                            </button>
+                            <button class="btn-outline btn-sm" onclick="exportOrdersCSV()">
+                                <i data-lucide="download"></i> تصدير CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="toolbar-advanced">
+                        <div class="search-box">
+                            <i data-lucide="search"></i>
+                            <input type="text" id="searchOrderInput" placeholder="بحث برقم الطلب أو اسم العميل...">
+                        </div>
+                        <select id="filterOrderStatus" class="filter-select">
+                            <option value="all">كل الحالات</option>
+                            <option value="pending">معلق</option>
+                            <option value="confirmed">مؤكد</option>
+                            <option value="preparing">قيد التحضير</option>
+                            <option value="ready">جاهز</option>
+                            <option value="assigned">معين</option>
+                            <option value="accepted">مقبول</option>
+                            <option value="picked_up">مستلم</option>
+                            <option value="on_the_way">في الطريق</option>
+                            <option value="delivered">مكتمل</option>
+                            <option value="cancelled">ملغي</option>
+                        </select>
+                    </div>
+
+                    <div class="card-box">
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>العميل</th>
+                                        <th>المتجر</th>
+                                        <th>السائق</th>
+                                        <th>المبلغ</th>
+                                        <th>الحالة</th>
+                                        <th>التاريخ</th>
+                                        <th>إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ordersTableBody">
+                                    <tr><td colspan="8" class="text-center">جاري التحميل...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="ordersPagination"></div>
+                    </div>
+                </section>
+
+<!-- OFFERS -->
+<section id="tab-offers" class="tab-pane">
+    <div class="page-hero">
+        <div><h1>العروض والبانرز</h1></div>
+        <div class="hero-actions">
+            <button class="btn-primary" onclick="openOfferModal()"><i data-lucide="plus"></i> عرض</button>
+            <button class="btn-secondary" onclick="openBannerModal()"><i data-lucide="image-plus"></i> بانر</button>
+        </div>
+    </div>
+    <h3 class="section-title">العروض</h3>
+    <div class="card-box mb-4">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>الصورة</th><th>العنوان</th><th>المطعم</th><th>الثمن</th><th>إجراء</th></tr></thead>
+                <tbody id="offersTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+    <h3 class="section-title">البانرز</h3>
+    <div class="card-box">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>الصورة</th><th>العنوان</th><th>إجراء</th></tr></thead>
+                <tbody id="bannersTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- COUPONS -->
+<section id="tab-coupons" class="tab-pane">
+    <div class="page-hero">
+        <div><h1>الكوبونات</h1></div>
+        <button class="btn-primary" onclick="openCouponModal()"><i data-lucide="plus"></i> كوبون</button>
+    </div>
+    <div class="card-box">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>الكود</th><th>القيمة</th><th>الاستخدام</th><th>إجراء</th></tr></thead>
+                <tbody id="couponsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ZONES -->
+<section id="tab-zones" class="tab-pane">
+    <div class="page-hero">
+        <div><h1>مناطق التوصيل</h1></div>
+        <button class="btn-primary" onclick="openZoneModal()"><i data-lucide="plus"></i> منطقة</button>
+    </div>
+    <div class="card-box">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>المنطقة</th><th>المدينة</th><th>الرسوم</th><th>إجراء</th></tr></thead>
+                <tbody id="zonesTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- STATUS -->
+<section id="tab-status" class="tab-pane">
+    <div class="page-hero"><div><h1>حالة الخدمات</h1></div></div>
+    <div class="status-grid mb-4">
+        <div class="status-card">
+            <div class="status-icon orange"><i data-lucide="package"></i></div>
+            <div class="status-info"><h3>الطرود</h3></div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggleServicePackage" onchange="toggleServiceStatus('package', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="status-card">
+            <div class="status-icon green"><i data-lucide="shopping-cart"></i></div>
+            <div class="status-info"><h3>الهايبرماركت</h3></div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggleServiceGroceries" onchange="toggleServiceStatus('groceries', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="status-card">
+            <div class="status-icon pink"><i data-lucide="heart-pulse"></i></div>
+            <div class="status-info"><h3>Para & Beauty</h3></div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggleServicePara" onchange="toggleServiceStatus('parapharmacy', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+</section>
+
+<!-- REPORTS -->
+<section id="tab-reports" class="tab-pane">
+    <div class="page-hero"><div><h1>التقارير</h1></div></div>
+    <div class="reports-summary-grid mb-4">
+        <div class="report-box"><h4>طلبات اليوم</h4><div class="value" id="repOrdersToday">0</div></div>
+        <div class="report-box"><h4>مبيعات اليوم</h4><div class="value text-success" id="repSalesToday">0.00 د.م</div></div>
+        <div class="report-box"><h4>مبيعات الشهر</h4><div class="value text-success" id="repSalesMonth">0.00 د.م</div></div>
+    </div>
+</section>
+
+<!-- AUDIT -->
+<section id="tab-audit" class="tab-pane">
+    <div class="page-hero"><div><h1>سجل الإجراءات</h1></div></div>
+    <div class="card-box">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>التاريخ</th><th>المسؤول</th><th>الإجراء</th><th>الهدف</th></tr></thead>
+                <tbody id="auditTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<!-- ═══════════════ EARNINGS ═══════════════ -->
+                <section id="tab-earnings" class="tab-pane">
+                    <div class="page-hero">
+                        <div>
+                            <h1>💰 الأرباح والدفعات</h1>
+                            <p>إدارة أرباح السائقين وتسجيل الدفعات</p>
+                        </div>
+                        <div class="hero-actions">
+                            <button class="btn-outline btn-sm" onclick="exportEarningsCSV()">
+                                <i data-lucide="download"></i> تصدير
+                            </button>
+                            <button class="btn-primary btn-sm" onclick="openPaymentModal()">
+                                <i data-lucide="banknote"></i> تسجيل دفعة
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- KPI Cards -->
+                    <div class="stats-grid mb-4">
+                        <div class="stat-card stat-primary">
+                            <div class="stat-head">
+                                <span class="stat-label">إجمالي الأرباح (الشهر)</span>
+                            </div>
+                            <div class="stat-value" id="earnStatTotalMonth">0 د.م</div>
+                            <div class="stat-foot"><i data-lucide="trending-up"></i> هذا الشهر</div>
+                        </div>
+                        <div class="stat-card stat-green">
+                            <div class="stat-head">
+                                <span class="stat-label">مدفوع للسائقين</span>
+                            </div>
+                            <div class="stat-value" id="earnStatPaid">0 د.م</div>
+                            <div class="stat-foot"><i data-lucide="check-circle"></i> تم الدفع</div>
+                        </div>
+                        <div class="stat-card stat-orange">
+                            <div class="stat-head">
+                                <span class="stat-label">مستحقات متبقية</span>
+                            </div>
+                            <div class="stat-value" id="earnStatPending">0 د.م</div>
+                            <div class="stat-foot"><i data-lucide="clock"></i> للدفع</div>
+                        </div>
+                        <div class="stat-card stat-purple">
+                            <div class="stat-head">
+                                <span class="stat-label">دفعات هذا الشهر</span>
+                            </div>
+                            <div class="stat-value" id="earnStatCount">0</div>
+                            <div class="stat-foot"><i data-lucide="receipt"></i> دفعة</div>
+                        </div>
+                    </div>
+
+                    <!-- Filter bar -->
+                    <div class="filter-bar mb-4">
+                        <div class="search-box">
+                            <i data-lucide="search"></i>
+                            <input type="text" id="searchEarningsInput" placeholder="بحث باسم السائق...">
+                        </div>
+                        <select id="filterEarningsPeriod" class="filter-select">
+                            <option value="all">كل الفترات</option>
+                            <option value="today">اليوم</option>
+                            <option value="week">هذا الأسبوع</option>
+                            <option value="month">هذا الشهر</option>
+                        </select>
+                        <select id="filterEarningsStatus" class="filter-select">
+                            <option value="all">كل الحالات</option>
+                            <option value="pending">مستحق</option>
+                            <option value="paid">مدفوع</option>
+                        </select>
+                    </div>
+
+                    <!-- Earnings Table -->
+                    <div class="card-box">
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>السائق</th>
+                                        <th>Driver ID</th>
+                                        <th>التوصيلات</th>
+                                        <th>الإجمالي</th>
+                                        <th>المدفوع</th>
+                                        <th>المتبقي</th>
+                                        <th>آخر دفعة</th>
+                                        <th>إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="earningsTableBody">
+                                    <tr><td colspan="8" class="text-center">جاري التحميل...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Payment History -->
+                    <div class="card-box mt-4">
+                        <div class="card-header">
+                            <h3><i data-lucide="history" style="display:inline;width:18px;height:18px;vertical-align:-3px;"></i> سجل الدفعات</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>التاريخ</th>
+                                        <th>السائق</th>
+                                        <th>المبلغ</th>
+                                        <th>الفترة</th>
+                                        <th>طريقة الدفع</th>
+                                        <th>بواسطة</th>
+                                        <th>ملاحظات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentsHistoryBody">
+                                    <tr><td colspan="7" class="text-center">لا توجد دفعات بعد</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ═══════════════ ANALYTICS ═══════════════ -->
+                <section id="tab-analytics" class="tab-pane">
+                    <div class="page-hero">
+                        <div>
+                            <h1>📊 التحليلات المتقدمة</h1>
+                            <p>رؤى تفصيلية عن أداء النظام</p>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid mb-4">
+                        <div class="stat-card stat-green">
+                            <div class="stat-head"><span class="stat-label">معدل إتمام الطلبات</span></div>
+                            <div class="stat-value" id="anaCompletionRate">0%</div>
+                            <div class="stat-foot"><i data-lucide="check-circle"></i> آخر 30 يوم</div>
+                        </div>
+                        <div class="stat-card stat-blue">
+                            <div class="stat-head"><span class="stat-label">متوسط وقت التوصيل</span></div>
+                            <div class="stat-value" id="anaAvgDeliveryTime">0 د</div>
+                            <div class="stat-foot"><i data-lucide="clock"></i> من الطلب للتسليم</div>
+                        </div>
+                        <div class="stat-card stat-orange">
+                            <div class="stat-head"><span class="stat-label">متوسط قيمة الطلب</span></div>
+                            <div class="stat-value" id="anaAvgOrderValue">0 د.م</div>
+                            <div class="stat-foot"><i data-lucide="coins"></i> متوسط</div>
+                        </div>
+                        <div class="stat-card stat-purple">
+                            <div class="stat-head"><span class="stat-label">معدل التكرار</span></div>
+                            <div class="stat-value" id="anaRepeatRate">0%</div>
+                            <div class="stat-foot"><i data-lucide="users"></i> عملاء متكررون</div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="card-box">
+                            <div class="card-header">
+                                <h3>📈 الطلبات خلال 7 أيام</h3>
+                            </div>
+                            <div class="chart-container-lg"><canvas id="analyticsWeekChart"></canvas></div>
+                        </div>
+                        <div class="card-box">
+                            <div class="card-header">
+                                <h3>🥇 أفضل السائقين</h3>
+                            </div>
+                            <div id="topDriversList"></div>
+                        </div>
+                    </div>
+
+                    <div class="card-box mt-4">
+                        <div class="card-header">
+                            <h3>🏆 أفضل المطاعم</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr><th>#</th><th>المطعم</th><th>الطلبات</th><th>الإيرادات</th><th>متوسط التقييم</th></tr>
+                                </thead>
+                                <tbody id="topRestaurantsBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+</main>
+</div>
+</div>
+
+<!-- MODALS -->
+
+<!-- HYPERMARKET MODAL -->
+<div class="modal-overlay hidden" id="hypermarketModal">
+    <div class="modal-card modal-lg">
+        <div class="modal-header">
+            <h3 id="hyperModalTitle">إضافة هايبرماركت</h3>
+            <button class="close-modal" onclick="closeModal('hypermarketModal')"><i data-lucide="x"></i></button>
+        </div>
+        <form id="hypermarketForm">
+            <input type="hidden" id="hyperId">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>السلسلة *</label>
+                    <select id="hyperChainSelect" required onchange="onChainChange(this.value)">
+                        <option value="">-- اختر --</option>
+                        <option value="carrefour">Carrefour</option>
+                        <option value="marjane">Marjane</option>
+                        <option value="bim">BIM</option>
+                        <option value="labelvie">Label Vie</option>
+                        <option value="aswak">Aswak Assalam</option>
+                        <option value="atimab">Atacadao</option>
+                        <option value="custom">مخصصة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>الاسم المعروض *</label>
+                    <input type="text" id="hyperName" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>الهاتف</label><input type="text" id="hyperPhone"></div>
+                <div class="form-group"><label>المدينة</label><input type="text" id="hyperCity" placeholder="Oujda"></div>
+            </div>
+            <div class="form-group"><label>العنوان</label><input type="text" id="hyperAddress"></div>
+            <div class="form-group">
+                <label>الصورة *</label>
+                <div class="upload-row">
+                    <input type="text" id="hyperImage" required style="flex:1;">
+                    <button type="button" class="btn-secondary btn-sm" onclick="document.getElementById('hyperImgInput').click()"><i data-lucide="camera"></i></button>
+                    <input type="file" id="hyperImgInput" accept="image/*" class="hidden" onchange="handleFileUpload(event, 'hyperImage', 'hyperImgPreview')">
+                </div>
+                <img id="hyperImgPreview" class="hidden preview-thumb">
+            </div>
+            <div class="form-group">
+                <label>رابط المصدر (URL)</label>
+                <input type="url" id="hyperSourceUrl" placeholder="https://www.carrefour.ma/...">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>تكرار المزامنة</label>
+                    <select id="hyperSyncFrequency">
+                        <option value="hourly">كل ساعة</option>
+                        <option value="6h" selected>كل 6 ساعات</option>
+                        <option value="daily">يومياً</option>
+                        <option value="manual">يدوياً</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>هامش الربح (%)</label>
+                    <input type="number" id="hyperPriceMarkup" value="15" min="0" max="100">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>العملة</label>
+                    <select id="hyperCurrency"><option value="MAD">MAD</option></select>
+                </div>
+                <div class="form-group">
+                    <label>حالة المزامنة</label>
+                    <select id="hyperSyncEnabled">
+                        <option value="true">مفعّلة</option>
+                        <option value="false">موقوفة</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>ربط التصنيفات</label>
+                <div id="categoryMappingList"></div>
+                <button type="button" class="btn-outline btn-sm mt-2" onclick="addMappingRow()"><i data-lucide="plus"></i> إضافة ربط</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('hypermarketModal')">إلغاء</button>
+                <button type="submit" class="btn-primary"><i data-lucide="save"></i> حفظ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- DRIVER MODAL -->
+<div class="modal-overlay hidden" id="driverModal">
+    <div class="modal-card modal-lg">
+        <div class="modal-header">
+            <h3 id="driverModalTitleText">إضافة سائق</h3>
+            <button class="close-modal" onclick="closeModal('driverModal')"><i data-lucide="x"></i></button>
+        </div>
+        <form id="driverForm">
+            <input type="hidden" id="driverFormFirebaseId">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Driver ID</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="driverFormId" readonly style="background:var(--bg-body); font-family:monospace; font-weight:700; color:var(--primary);">
+                        <button type="button" class="btn-secondary btn-sm" onclick="regenerateDriverId()"><i data-lucide="refresh-cw"></i></button>
+                    </div>
+                </div>
+                <div class="form-group"><label>الاسم *</label><input type="text" id="driverFormName" required></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>الهاتف *</label><input type="tel" id="driverFormPhone" required placeholder="+2126..."></div>
+                <div class="form-group"><label>البريد</label><input type="email" id="driverFormEmail"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>المركبة *</label>
+                    <select id="driverFormVehicle" required>
+                        <option value="moto">موتو</option>
+                        <option value="scooter">سكوتر</option>
+                        <option value="car">سيارة</option>
+                        <option value="bike">دراجة</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>رقم اللوحة</label><input type="text" id="driverFormPlate"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>الحالة الإدارية</label>
+                    <select id="driverFormAdminStatus">
+                        <option value="active">نشط</option>
+                        <option value="pending_verification">قيد التحقق</option>
+                        <option value="suspended_temp">موقوف مؤقت</option>
+                        <option value="banned">محظور</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>التوثيق</label>
+                    <select id="driverFormVerification">
+                        <option value="pending">قيد المراجعة</option>
+                        <option value="verified">موثّق</option>
+                        <option value="rejected">مرفوض</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>الصورة الشخصية</label>
+                <div class="upload-row">
+                    <input type="text" id="driverFormImage" style="flex:1;">
+                    <button type="button" class="btn-secondary btn-sm" onclick="document.getElementById('driverImgPhone').click()"><i data-lucide="camera"></i></button>
+                    <input type="file" id="driverImgPhone" accept="image/*" class="hidden" onchange="handleFileUpload(event, 'driverFormImage', 'driverImgPreview')">
+                </div>
+                <img id="driverImgPreview" class="hidden preview-thumb">
+            </div>
+            <div class="form-group">
+                <label>البطاقة الوطنية CIN *</label>
+                <div class="upload-row">
+                    <input type="text" id="driverFormCinImage" required style="flex:1;">
+                    <button type="button" class="btn-secondary btn-sm" onclick="document.getElementById('driverCinPhone').click()"><i data-lucide="id-card"></i></button>
+                    <input type="file" id="driverCinPhone" accept="image/*" class="hidden" onchange="handleFileUpload(event, 'driverFormCinImage', 'driverCinPreview')">
+                </div>
+                <img id="driverCinPreview" class="hidden preview-thumb">
+            </div>
+            <div class="form-group"><label>ملاحظات إدارية</label><textarea id="driverFormAdminNotes" rows="2"></textarea></div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('driverModal')">إلغاء</button>
+                <button type="submit" class="btn-primary"><i data-lucide="save"></i> حفظ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- CREATE AUTH MODAL -->
+<div class="modal-overlay hidden" id="createAuthModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>إنشاء حساب دخول</h3>
+            <button class="close-modal" onclick="closeModal('createAuthModal')"><i data-lucide="x"></i></button>
+        </div>
+        <form id="createAuthForm">
+            <input type="hidden" id="createAuthDriverDocId">
+            <div class="form-group"><label>السائق</label><select id="createAuthDriverSelect" required><option value="">-- اختر --</option></select></div>
+            <div class="form-group"><label>Driver ID</label><input type="text" id="createAuthDriverId" readonly style="background:var(--bg-body);"></div>
+            <div class="form-group"><label>البريد (اختياري)</label><input type="email" id="createAuthEmail"></div>
+            <div class="form-group">
+                <label>كلمة المرور</label>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="createAuthPassword" readonly style="flex:1; font-family:monospace;">
+                    <button type="button" class="btn-secondary btn-sm" onclick="regenerateTempPassword()"><i data-lucide="refresh-cw"></i></button>
+                    <button type="button" class="btn-secondary btn-sm" onclick="copyToClipboard(document.getElementById('createAuthPassword').value)"><i data-lucide="copy"></i></button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('createAuthModal')">إلغاء</button>
+                <button type="submit" class="btn-primary"><i data-lucide="key"></i> إنشاء</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- DRIVER CONTROL MODAL -->
+<div class="modal-overlay hidden" id="driverControlModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>تحكم: <span id="ctrlDriverNameTitle"></span></h3>
+            <button class="close-modal" onclick="closeModal('driverControlModal')"><i data-lucide="x"></i></button>
+        </div>
+        <form id="driverControlForm">
+            <input type="hidden" id="ctrlDriverFirebaseId">
+            <div class="form-group">
+                <label>الحالة الإدارية</label>
+                <select id="ctrlDriverAdminStatus" onchange="toggleSuspensionField(this.value)">
+                    <option value="active">نشط</option>
+                    <option value="warned">إنذار</option>
+                    <option value="suspended_temp">موقوف مؤقت</option>
+                    <option value="banned">محظور</option>
+                </select>
+            </div>
+            <div class="form-group" id="suspensionDurationGroup" style="display:none;">
+                <label>المدة</label>
+                <select id="ctrlDriverSuspendDuration">
+                    <option value="24">24 ساعة</option>
+                    <option value="48">48 ساعة</option>
+                    <option value="168">أسبوع</option>
+                </select>
+            </div>
+            <div class="form-group"><label>السبب</label><textarea id="ctrlDriverReason" rows="3"></textarea></div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('driverControlModal')">إلغاء</button>
+                <button type="submit" class="btn-primary">تطبيق</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- RESTAURANT MODAL -->
+<div class="modal-overlay hidden" id="restaurantModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3 id="restModalTitle">مطعم</h3>
+            <button class="close-modal" onclick="closeModal('restaurantModal')"><i data-lucide="x"></i></button>
+        </div>
+        <form id="restaurantForm">
+            <input type="hidden" id="restFormId">
+            <div class="form-group"><label>الاسم *</label><input type="text" id="restFormName" required></div>
+            <div class="form-group"><label>التصنيف *</label><input type="text" id="restFormCuisine" required></div>
+            <div class="form-group"><label>اسم التصنيف الظاهر</label><input type="text" id="restFormCategoryName"></div>
+            <div class="form-row">
+                <div class="form-group"><label>وقت التوصيل</label><input type="text" id="restFormTime" placeholder="30 min"></div>
+                <div class="form-group"><label>رسوم</label><input type="number" id="restFormFee" value="10"></div>
+            </div>
+            <div class="form-group">
+                <label>الصورة *</label>
+                <div class="upload-row">
+                    <input type="text" id="restFormImage" required style="flex:1;">
+                    <button type="button" class="btn-secondary btn-sm" onclick="document.getElementById('restPhoneImgInput').click()"><i data-lucide="camera"></i></button>
+                    <input type="file" id="restPhoneImgInput" accept="image/*" class="hidden" onchange="handleFileUpload(event, 'restFormImage', 'restImgPreview')">
+                </div>
+                <img id="restImgPreview" class="hidden preview-thumb">
+            </div>
+            <div class="form-group"><label>الهاتف</label><input type="text" id="restFormPhone"></div>
+            
+            <div class="form-row">
+    <div class="form-group">
+        <label>📍 Latitude (خط العرض)</label>
+        <input type="number" id="restFormLat" step="0.000001" placeholder="34.681400">
+    </div>
+    <div class="form-group">
+        <label>📍 Longitude (خط الطول)</label>
+        <input type="number" id="restFormLng" step="0.000001" placeholder="-1.908600">
+    </div>
+</div>
+<button type="button" class="btn-secondary btn-sm mb-4" onclick="getCurrentLocation('restFormLat', 'restFormLng')" style="width:100%">
+    <i data-lucide="map-pin"></i> استخدام موقعي الحالي
+</button>
+            
+            <div class="form-row">
+                <div class="form-group"><label class="switch-label"><input type="checkbox" id="restFormFreeDelivery"> توصيل مجاني</label></div>
+                <div class="form-group"><label class="switch-label"><input type="checkbox" id="restFormTodayOffer"> عرض اليوم</label></div>
+            </div>
+            <div class="form-group"><label class="switch-label"><input type="checkbox" id="restFormIsOpen" checked> مفتوح</label></div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('restaurantModal')">إلغاء</button>
+                <button type="submit" class="btn-primary">حفظ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MENU MODAL -->
+<div class="modal-overlay hidden" id="menuModal">
+    <div class="modal-card modal-lg">
+        <div class="modal-header">
+            <div><h3 id="menuModalTitle">المنيو</h3><small id="menuModalSub"></small></div>
+            <button class="close-modal" onclick="closeModal('menuModal')"><i data-lucide="x"></i></button>
+        </div>
+        <form id="menuProductForm" class="product-form-box mb-4">
+            <h4>إضافة / تعديل</h4>
+            <input type="hidden" id="menuProdId">
+            <input type="hidden" id="menuProdRestId">
+            <div class="form-row">
+                <div class="form-group"><label>الاسم *</label><input type="text" id="menuProdName" required></div>
+                <div class="form-group"><label>السعر *</label><input type="number" id="menuProdPrice" step="0.5" required></div>
+            </div>
+            <div class="form-group"><label>التصنيف</label><input type="text" id="menuProdCat"></div>
+            <div class="form-group">
+                <label>الصورة *</label>
+                <div class="upload-row">
+                    <input type="text" id="menuProdImage" required style="flex:1;">
+                    <button type="button" class="btn-secondary btn-sm" onclick="document.getElementById('menuPhoneImgInput').click()"><i data-lucide="camera"></i></button>
+                    <input type="file" id="menuPhoneImgInput" accept="image/*" class="hidden" onchange="handleFileUpload(event, 'menuProdImage', 'menuImgPreview')">
+                </div>
+                <img id="menuImgPreview" class="hidden preview-thumb">
+            </div>
+            <div class="form-group"><label>الوصف</label><input type="text" id="menuProdDesc"></div>
+            <button type="submit" class="btn-primary w-100">حفظ</button>
+        </form>
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>الصورة</th><th>الاسم</th><th>السعر</th><th>إجراء</th></tr></thead>
+                <tbody id="menuProductsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- STORE PRODUCTS MODAL -->
+<div class="modal-overlay hidden" id="storeProductsModal">
+    <div class="modal-card modal-lg">
+        <div class="modal-header">
+            <div><h3 id="storeProductsModalTitle">منتجات</h3><small id="storeProductsModalSub"></small></div>
+            <button class="close-modal" onclick="closeModal('storeProductsModal')"><i data-lucide="x"></i></button>
+        </div>
+        <form id="storeProductForm" class="product-form-box mb-4">
+            <h4>إضافة / تعديل</h4>
+            <input type="hidden" id="storeProdId">
+            <input type="hidden" id="storeProdStoreId">
+            <input type="hidden" id="storeCategoryType">
+            <div class="form-row">
+                <div class="form-group"><label>الاسم *</label><input type="text" id="storeProdName" required></div>
+                <div class="form-group"><label>السعر *</label><input type="number" id="storeProdPrice" step="0.5" required></div>
+            </div>
+            <div class="form-group"><label>التصنيف</label><input type="text" id="storeProdCat"></div>
+            <div class="form-group">
+                <label>الصورة *</label>
+                <div class="upload-row">
+                    <input type="text" id="storeProdImage" required style="flex:1;">
+                    <button type="button" class="btn-secondary btn-sm" onclick="document.getElementById('storeProdPhoneImgInput').click()"><i data-lucide="camera"></i></button>
+                    <input type="file" id="storeProdPhoneImgInput" accept="image/*" class="hidden" onchange="handleFileUpload(event, 'storeProdImage', 'storeProdImgPreview')">
+                </div>
+                <img id="storeProdImgPreview" class="hidden preview-thumb">
+            </div>
+            <div class="form-group"><label>الوصف</label><input type="text" id="storeProdDesc"></div>
+            <button type="submit" class="btn-primary w-100">حفظ</button>
+        </form>
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>الصورة</th><th>الاسم</th><th>السعر</th><th>إجراء</th></tr></thead>
+                <tbody id="storeProductsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- STORE MODAL -->
+<div class="modal-overlay hidden" id="storeModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3 id="storeModalTitle">متجر</h3>
+            <button class="close-modal" onclick="closeModal('storeModal')"><i data-lucide="x"></i></button>
+        </div>
+        <form id="storeForm">
+            <div class="form-group">
+                <label>الفئة *</label>
+                <select id="storeFormCategory" required>
+                    <option value="Fashion">أزياء</option>
+                    <option value="Electronics">إلكترونيات</option>
+                    <option value="Perfume">عطور</option>
+                    <option value="Accessories">إكسسوارات</option>
+                    <option value="Home">منزل</option>
+                    <option value="Other">أخرى</option>
+                </select>
+            </div>
+            <div class="form-group"><label>الاسم *</label><input type="text" id="storeFormName" required></div>
+            <div class="form-group"><label>الهاتف</label><input type="text" id="storeFormPhone"></div>
+            
+            <div class="form-row">
+    <div class="form-group">
+        <label>📍 Latitude</label>
+        <input type="number" id="storeFormLat" step="0.000001" placeholder="34.681400">
+    </div>
+    <div class="form-group">
+        <label>📍 Longitude</label>
+        <input type="number" id="storeFormLng" step="0.000001" placeholder="-1.908600">
+    </div>
+</div>
+<button type="button" class="btn-secondary btn-sm mb-4" onclick="getCurrentLocation('storeFormLat', 'storeFormLng')" style="width:100%">
+    <i data-lucide="map-pin"></i> استخدام موقعي الحالي
+</button>
+            
+            <div class="form-group">
+                <label>الصورة *</label>
+                <div class="upload-row">
+                    <input type="text" id="storeFormImage" required style="flex:1;">
+                    <button type="button" class="btn-secondary btn-sm" onclick="document.getElementById('storePhoneImgInput').click()"><i data-lucide="camera"></i></button>
+                    <input type="file" id="storePhoneImgInput" accept="image/*" class="hidden" onchange="handleFileUpload(event, 'storeFormImage', 'storeImgPreview')">
+                </div>
+                <img id="storeImgPreview" class="hidden preview-thumb">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('storeModal')">إلغاء</button>
+                <button type="submit" class="btn-primary">حفظ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- OFFER MODAL -->
+<div class="modal-overlay hidden" id="offerModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>عرض</h3>
+            <button class="close-modal" onclick="closeModal('offerModal')"><i data-lucide="x"></i></button>
+        </div>
+        <form id="offerForm">
+            <div class="form-group"><label>العنوان *</label><input type="text" id="offerTitle" required></div>
+            <div class="form-group"><label>المطعم</label><select id="offerRestSelect"></select></div>
+            <div class="form-group"><label>الثمن *</label><input type="number" id="offerDiscount" step="0.5" required></div>
+            <div class="form-group">
+                <label>الصورة *</label>
+                <div class="upload-row">
+                    <input type="text" id="offerImage" required style="flex:1;">
+                    <button type="button" class="btn-secondary btn-sm" onclick="document.getElementById('offerPhoneImgInput').click()"><i data-lucide="camera"></i></button>
+                    <input type="file" id="offerPhoneImgInput" accept="image/*" class="hidden" onchange="handleFileUpload(event, 'offerImage', 'offerImgPreview')">
+                </div>
+                <img id="offerImgPreview" class="hidden preview-thumb">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('offerModal')">إلغاء</button>
+                <button type="submit" class="btn-primary">نشر</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- BANNER MODAL -->
+<div class="modal-overlay hidden" id="bannerModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>بانر</h3>
+            <button class="close-modal" onclick="closeModal('bannerModal')"><i data-lucide="x"></i></button>
+        </div>
+        <form id="bannerForm">
+            <div class="form-group"><label>العنوان *</label><input type="text" id="bannerTitle" required></div>
+            <div class="form-group"><label>الفرعي</label><input type="text" id="bannerSub"></div>
+            <div class="form-group">
+                <label>الصورة *</label>
+                <div class="upload-row">
+                    <input type="text" id="bannerImage" required style="flex:1;">
+                    <button type="button" class="btn-secondary btn-sm" onclick="document.getElementById('bannerPhoneImgInput').click()"><i data-lucide="camera"></i></button>
+                    <input type="file" id="bannerPhoneImgInput" accept="image/*" class="hidden" onchange="handleFileUpload(event, 'bannerImage', 'bannerImgPreview')">
+                </div>
+                <img id="bannerImgPreview" class="hidden preview-thumb">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('bannerModal')">إلغاء</button>
+                <button type="submit" class="btn-primary">حفظ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- COUPON MODAL -->
+<div class="modal-overlay hidden" id="couponModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>كوبون</h3>
+            <button class="close-modal" onclick="closeModal('couponModal')"><i data-lucide="x"></i></button>
+        </div>
+        <form id="couponForm">
+            <div class="form-group"><label>الكود *</label><input type="text" id="couponCode" style="text-transform:uppercase" required></div>
+            <div class="form-group"><label>النسبة (%) *</label><input type="number" id="couponValue" required></div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('couponModal')">إلغاء</button>
+                <button type="submit" class="btn-primary">حفظ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ZONE MODAL -->
+<div class="modal-overlay hidden" id="zoneModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>منطقة</h3>
+            <button class="close-modal" onclick="closeModal('zoneModal')"><i data-lucide="x"></i></button>
+        </div>
+        <form id="zoneForm">
+            <div class="form-group"><label>الاسم *</label><input type="text" id="zoneName" required></div>
+            <div class="form-group"><label>المدينة</label><input type="text" id="zoneCity"></div>
+            <div class="form-group"><label>الرسوم</label><input type="number" id="zoneFee" value="15" step="0.5"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('zoneModal')">إلغاء</button>
+                <button type="submit" class="btn-primary">حفظ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ORDER DETAILS MODAL -->
+<div class="modal-overlay hidden" id="orderDetailsModal">
+    <div class="modal-card modal-lg">
+        <div class="modal-header">
+            <h3 id="ordModalTitle">تفاصيل</h3>
+            <button class="close-modal" onclick="closeModal('orderDetailsModal')"><i data-lucide="x"></i></button>
+        </div>
+        <div id="ordModalContent"></div>
+    </div>
+</div>
+
+<!-- DRIVER DETAILS MODAL (requis par openDriverDetails dans admin.js) -->
+<div class="modal-overlay hidden" id="driverDetailsModal">
+    <div class="modal-card modal-lg">
+        <div class="modal-header">
+            <div>
+                <h3 id="ddTitle">سائق</h3>
+                <small id="ddId" style="color:var(--text-muted);"></small>
+            </div>
+            <button class="close-modal" onclick="closeModal('driverDetailsModal')"><i data-lucide="x"></i></button>
+        </div>
+        <div id="ddContent"></div>
+    </div>
+</div>
+
+<!-- PAYMENT MODAL (requis par openPaymentModal dans admin.js) -->
+<div class="modal-overlay hidden" id="paymentModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>تسجيل دفعة لسائق</h3>
+            <button class="close-modal" onclick="closeModal('paymentModal')"><i data-lucide="x"></i></button>
+        </div>
+        <form id="paymentForm">
+            <div class="form-group">
+                <label>السائق *</label>
+                <select id="payDriverSelect" class="form-control" required onchange="updatePaymentSummary()"></select>
+            </div>
+            <div class="form-group">
+                <label>الفترة</label>
+                <select id="payPeriod" class="form-control">
+                    <option value="all">الكل</option>
+                    <option value="today">اليوم</option>
+                    <option value="week">هذا الأسبوع</option>
+                    <option value="month">هذا الشهر</option>
+                </select>
+            </div>
+            <div id="paySummaryBox" class="alert"></div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>المبلغ (د.م) *</label>
+                    <input type="number" id="payAmount" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>طريقة الدفع</label>
+                    <select id="payMethod" class="form-control">
+                        <option value="cash">نقدي</option>
+                        <option value="bank">تحويل بنكي</option>
+                        <option value="wallet">محفظة إلكترونية</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group"><label>المرجع</label><input type="text" id="payReference" placeholder="رقم الإيصال أو التحويل"></div>
+            <div class="form-group"><label>ملاحظات</label><input type="text" id="payNotes"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('paymentModal')">إلغاء</button>
+                <button type="submit" class="btn-primary">تسجيل الدفعة</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- SYNC LOG MODAL (requis par openSyncLogModal dans admin.js) -->
+<div class="modal-overlay hidden" id="syncLogModal">
+    <div class="modal-card modal-lg">
+        <div class="modal-header">
+            <h3>سجل المزامنة</h3>
+            <button class="close-modal" onclick="closeModal('syncLogModal')"><i data-lucide="x"></i></button>
+        </div>
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead><tr><th>التاريخ</th><th>السلسلة</th><th>الحالة</th><th>المنتجات</th><th>المدة</th><th>تفاصيل</th></tr></thead>
+                <tbody id="syncLogTableBody"><tr><td colspan="6" class="text-center">لا توجد عمليات</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- SYNC SETTINGS MODAL (information seulement : le scraper tourne hors du site) -->
+<div class="modal-overlay hidden" id="syncSettingsModal">
+    <div class="modal-card modal-sm">
+        <div class="modal-header">
+            <h3>إعدادات المزامنة</h3>
+            <button class="close-modal" onclick="closeModal('syncSettingsModal')"><i data-lucide="x"></i></button>
+        </div>
+        <p style="line-height:1.8; font-size:14px;">
+            جلب منتجات الهايبرماركت يتم بواسطة خدمة خارجية (Scraper) تكتب النتائج في Firestore
+            داخل المجموعات <strong>hypermarket_products</strong> و<strong>sync_logs</strong>.
+            هذا الموقع يعرض النتائج فقط ولا يشغّل الـ Scraper بنفسه.
+        </p>
+        <div class="modal-footer"><button class="btn-secondary" onclick="closeModal('syncSettingsModal')">إغلاق</button></div>
+    </div>
+</div>
+
+<!-- REVIEW DETAILS MODAL -->
+<div class="modal-overlay hidden" id="reviewDetailsModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>تفاصيل</h3>
+            <button class="close-modal" onclick="closeModal('reviewDetailsModal')"><i data-lucide="x"></i></button>
+        </div>
+        <div id="reviewDetailsContent"></div>
+    </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay hidden" id="confirmModal">
+    <div class="modal-card modal-sm text-center">
+        <h3 id="confirmModalTitle">تأكيد</h3>
+        <p id="confirmModalMsg">هل أنت متأكد؟</p>
+        <div class="modal-footer flex-center">
+            <button class="btn-secondary" onclick="closeModal('confirmModal')">إلغاء</button>
+            <button id="confirmModalActionBtn" class="btn-danger">تأكيد</button>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="admin.js?v=5"></script>
+</body>
+</html>

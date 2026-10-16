@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Call – المتاجر والتسوق</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="shops.css">
+    <style>
+        .hidden-view { display: none !important; }
+        .loading-box { text-align: center; padding: 40px 20px; color: #64748b; }
+        .spinner-icon { font-size: 32px; color: #FF7900; animation: spin 1s linear infinite; margin-bottom: 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        @media (max-width: 480px) { .products-grid { grid-template-columns: 1fr; } }
+        .spec-badge { background: #f1f5f9; color: #475569; font-size: 10px; padding: 2px 6px; border-radius: 4px; display: inline-block; margin: 2px 1px; }
+    </style>
+</head>
+<body>
+
+    <!-- الهيدر العلوي -->
+    <header class="app-header">
+        <div class="header-left">
+            <a href="profile.html" id="userProfileLink" title="الملف الشخصي">
+                <img id="userProfileImg" src="https://via.placeholder.com/40" alt="البروفايل" class="user-avatar-img">
+            </a>
+        </div>
+        <div class="header-center">
+            <div class="brand-logo-text">
+                <h2>One <span>Q</span>all</h2>
+                <p>Delivery Fast & Easy</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <button id="menuToggleBtn" class="icon-btn" title="القائمة">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي (ديناميكي حسب الرابط) -->
+    <main class="shops-container">
+        
+        <!-- 🛒 العرض الأول: قائمة المتاجر (يظهر افتراضياً) -->
+        <div id="shopsListView">
+            <div class="section-title-box">
+                <div>
+                    <h1>Shops</h1>
+                    <p>تسوق من المحلات القريبة منك</p>
+                </div>
+                <div class="section-icon">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+            </div>
+
+            <!-- شريط البحث والفلترة -->
+            <div class="search-filter-row">
+                <button class="filter-btn" id="openFilterBtn">
+                    <i class="fa-solid fa-sliders"></i>
+                </button>
+                <div class="search-input-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="shopSearchInput" placeholder="ابحث عن محل أو منتج...">
+                </div>
+            </div>
+
+            <!-- أزرار الفئات والتصنيفات -->
+        <!-- أزرار الفئات والتصنيفات الشاملة -->
+<div class="categories-scroll-row">
+    <button class="cat-pill active" data-category="all">
+        <i class="fa-solid fa-border-all"></i> الكل
+    </button>
+    <button class="cat-pill" data-category="Fashion">
+        <i class="fa-solid fa-shirt"></i> أزياء
+    </button>
+    <button class="cat-pill" data-category="Electronics">
+        <i class="fa-solid fa-laptop"></i> إلكترونيات
+    </button>
+    <button class="cat-pill" data-category="Perfume">
+        <i class="fa-solid fa-spray-can-sparkles"></i> عطور
+    </button>
+    <button class="cat-pill" data-category="Accessories">
+        <i class="fa-solid fa-gem"></i> إكسسوارات
+    </button>
+    <button class="cat-pill" data-category="Home">
+        <i class="fa-solid fa-house-chimney"></i> منزل وديكور
+    </button>
+    <button class="cat-pill" data-category="Sports">
+        <i class="fa-solid fa-dumbbell"></i> رياضة
+    </button>
+    <button class="cat-pill" data-category="Gifts">
+        <i class="fa-solid fa-gift"></i> هدايا
+    </button>
+    <button class="cat-pill" data-category="Other">
+        <i class="fa-solid fa-ellipsis"></i> أخرى
+    </button>
+</div>
+
+            <!-- قسم المتاجر -->
+            <div class="shops-section">
+                <div class="section-header">
+                    <h3>Popular Shops <i class="fa-solid fa-fire text-orange"></i></h3>
+                </div>
+                <div id="shopsGridContainer" class="shops-grid">
+                    <div class="loading-box">
+                        <div class="spinner"></div>
+                        <p>جاري جلب المتاجر القريبة...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🏪 العرض الثاني: تفاصيل المتجر ومنتجاته (يظهر فقط إذا كان هناك ID في الرابط) -->
+        <div id="storeDetailsView" class="hidden-view">
+            <button onclick="window.location.href='shops.html'" style="background: none; border: none; color: #FF7900; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-arrow-right"></i> العودة للمتاجر
+            </button>
+
+            <!-- بطاقة المتجر -->
+            <div id="storeHeroContainer" style="background:#fff; border-radius:16px; overflow:hidden; margin-bottom:20px; border:1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                <div class="loading-box">
+                    <i class="fa-solid fa-circle-notch spinner-icon"></i>
+                    <p>جاري تحميل تفاصيل المتجر...</p>
+                </div>
+            </div>
+
+            <!-- قائمة المنتجات -->
+            <h3 style="margin-bottom: 12px; font-size: 16px; font-weight: 700; color: #1e293b;">منتجات المتجر</h3>
+            <div id="storeProductsGrid" class="products-grid">
+                <div class="loading-box" style="grid-column: span 2;">
+                    <p style="font-size: 13px; color: #94a3b8;">جاري جلب المنتجات...</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ملف التشغيل الوحيد -->
+    <script type="module" src="shops.js"></script>
+</body>
+</html>

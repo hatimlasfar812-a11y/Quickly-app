@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr" id="htmlRoot">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Quickly - Détails de la Commande</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="./order-details.css">
+</head>
+<body>
+  
+  <header class="header">
+    <button id="backBtn" class="back-btn" aria-label="Retour">
+      <i class="fa-solid fa-arrow-left"></i>
+    </button>
+    <h2>Détails de la commande</h2>
+  </header>
+  
+  <div class="container">
+    
+    <!-- Restaurant & Status -->
+    <div class="card">
+      <h3 id="restaurantName">Chargement...</h3>
+      <p id="orderNumber">Order #...</p>
+      <span id="orderStatus" class="status">Pending</span>
+    </div>
+    
+    <!-- Items -->
+    <div class="card">
+      <h3>Articles commandés</h3>
+      <div id="itemsContainer"></div>
+    </div>
+    
+    <!-- Address -->
+    <div class="card">
+      <h3>Adresse de livraison</h3>
+      <p id="address">Chargement de l'adresse...</p>
+    </div>
+    
+    <!-- Payment -->
+    <div class="card">
+      <h3>Méthode de paiement</h3>
+      <p id="paymentMethod">Espèces</p>
+    </div>
+    
+    <!-- Price Summary -->
+    <div class="card">
+      <h3>Résumé du paiement</h3>
+      
+      <div class="summary-row">
+        <span>Sous-total</span>
+        <span id="subtotal">0.00 DH</span>
+      </div>
+      
+      <div class="summary-row">
+        <span>Frais de livraison</span>
+        <span id="deliveryFee">0.00 DH</span>
+      </div>
+      
+      <div class="summary-row">
+        <span>Frais de service</span>
+        <span id="serviceFee">0.00 DH</span>
+      </div>
+      
+      <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
+      
+      <div class="summary-total">
+        <span>Total</span>
+        <span id="totalPrice">0.00 DH</span>
+      </div>
+    </div>
+    
+    <!-- Timeline -->
+    <div class="card">
+      <h3>Suivi de la commande</h3>
+      <div class="timeline">
+        <div class="step" id="stepPlaced">
+          <div class="circle"></div>
+          <span>Commande validée</span>
+        </div>
+        <div class="step" id="stepPreparing">
+          <div class="circle"></div>
+          <span>En cours de préparation</span>
+        </div>
+        <div class="step" id="stepDriver">
+          <div class="circle"></div>
+          <span>Livreur assigné</span>
+        </div>
+        <div class="step" id="stepWay">
+          <div class="circle"></div>
+          <span>En route vers vous</span>
+        </div>
+        <div class="step" id="stepDelivered">
+          <div class="circle"></div>
+          <span>Livré avec succès</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Support -->
+    <div class="card">
+      <h3>Besoin d'aide ?</h3>
+      <button id="supportBtn" class="support-btn" onclick="window.open('https://wa.me/212000000000', '_blank')">
+        <i class="fa-solid fa-headset"></i> Contacter le support
+      </button>
+    </div>
+    
+    <!-- Track Button -->
+    <button id="trackBtn" class="track-btn" onclick="window.location.href='track-order.html?id=' + encodeURIComponent(new URLSearchParams(location.search).get('id') || localStorage.getItem('lastOrderId') || '')">
+      <i class="fa-solid fa-location-arrow"></i> Suivre sur la carte en direct
+    </button>
+    
+  </div>
+  
+  <script type="module" src="order-details.js"></script>
+</body>
+</html>

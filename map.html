@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>اختر عنوان التوصيل - Quickly</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- ✅ Lucide Icons -->
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+
+<!-- ✅ Leaflet Map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<link rel="stylesheet" href="map.css">
+</head>
+<body>
+
+<!-- Top Bar -->
+<header class="top-bar">
+  <button id="backBtn" class="back-btn" aria-label="رجوع">
+    <i data-lucide="arrow-right"></i>
+  </button>
+  <h2>اختر عنوان التوصيل</h2>
+  <button class="header-spacer" aria-hidden="true"></button>
+</header>
+
+<!-- Search Box -->
+<div class="search-box">
+  <i data-lucide="search"></i>
+  <input type="text" id="searchInput" placeholder="ابحث عن حي، شارع، أو معلم..." autocomplete="off">
+  <button type="button" class="search-clear hidden" id="searchClear" aria-label="مسح">
+    <i data-lucide="x"></i>
+  </button>
+  <div id="searchResults" class="hidden"></div>
+</div>
+
+<!-- Map -->
+<div id="map"></div>
+
+<!-- GPS Button -->
+<button id="gpsBtn" class="gps-btn" title="استخدم موقعي الحالي">
+  <i data-lucide="crosshair"></i>
+</button>
+
+<!-- Bottom Sheet -->
+<div class="bottom-sheet" id="bottomSheet">
+  <div class="sheet-handle" id="sheetHandle">
+    <div class="handle-bar"></div>
+  </div>
+
+  <div class="sheet-content">
+    <div class="sheet-header">
+      <div class="sheet-icon">
+        <i data-lucide="map-pin"></i>
+      </div>
+      <div>
+        <h3>عنوان التوصيل</h3>
+        <p id="selectedAddress" class="address-text">جاري تحديد الموقع...</p>
+      </div>
+    </div>
+
+    <div class="coordinates-badge" id="coordsBadge">
+      <i data-lucide="navigation"></i>
+      <span>اسحب الدبوس لضبط الموقع</span>
+    </div>
+
+    <div class="extra-inputs">
+      <div class="input-group">
+        <i data-lucide="building-2"></i>
+        <input type="text" id="building" placeholder="رقم المبنى / الشقة">
+      </div>
+      <div class="input-group">
+        <i data-lucide="layers"></i>
+        <input type="text" id="floor" placeholder="الطابق">
+      </div>
+      <div class="input-group">
+        <i data-lucide="message-square"></i>
+        <input type="text" id="note" placeholder="ملاحظة للسائق (اختياري)">
+      </div>
+    </div>
+
+    <button id="confirmBtn" class="confirm-btn">
+      <i data-lucide="check-circle-2"></i>
+      <span>تأكيد العنوان</span>
+    </button>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script src="map.js"></script>
+</body>
+</html>

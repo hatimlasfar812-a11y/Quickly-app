@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quickly - Recherche</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .search-page { padding: 16px 16px 110px; max-width: 640px; margin: 0 auto; }
+    .search-bar-box {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface-card); border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md); padding: 12px 14px;
+      box-shadow: var(--shadow-card); position: sticky; top: 8px; z-index: 5;
+    }
+    .search-bar-box i { color: var(--text-secondary); }
+    .search-bar-box input {
+      flex: 1; border: none; outline: none; background: transparent;
+      font-family: inherit; font-size: 15px; color: var(--text-primary);
+    }
+    .search-chips { display: flex; gap: 8px; margin: 14px 0; overflow-x: auto; }
+    .search-chip {
+      border: 1px solid var(--border-subtle); background: var(--surface-card);
+      color: var(--text-primary); padding: 8px 16px; border-radius: 999px;
+      font-family: inherit; font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer;
+    }
+    .search-chip.active { background: var(--primary-blue); color: #fff; border-color: var(--primary-blue); }
+    .search-count { font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; }
+    .result-row {
+      display: flex; gap: 12px; align-items: center; text-decoration: none;
+      background: var(--surface-card); border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md); padding: 10px; margin-bottom: 10px;
+      color: var(--text-primary); box-shadow: var(--shadow-card);
+    }
+    .result-row img { width: 64px; height: 64px; border-radius: 12px; object-fit: cover; background: #e2e8f0; }
+    .result-info { flex: 1; min-width: 0; }
+    .result-info h4 { font-size: 15px; font-weight: 700; margin: 0 0 2px; }
+    .result-info p { font-size: 12px; color: var(--text-secondary); margin: 0; }
+    .result-type {
+      font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+      background: rgba(8,120,209,0.1); color: var(--primary-blue);
+    }
+    .search-state { text-align: center; padding: 40px 10px; color: var(--text-secondary); font-size: 14px; }
+    .search-state i { font-size: 38px; margin-bottom: 10px; display: block; opacity: 0.6; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <main class="search-page">
+
+      <div class="search-bar-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="search" id="searchInput" placeholder="Rechercher un restaurant, un magasin…" autocomplete="off">
+      </div>
+
+      <div class="search-chips">
+        <button class="search-chip active" data-filter="all">Tout</button>
+        <button class="search-chip" data-filter="restaurant">Restaurants</button>
+        <button class="search-chip" data-filter="store">Magasins</button>
+      </div>
+
+      <div id="searchCount" class="search-count"></div>
+      <div id="searchResults">
+        <div class="search-state"><i class="fa-solid fa-spinner fa-spin"></i>Chargement…</div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav-bar">
+      <a href="index.html" class="nav-bar-item">
+        <i class="fa-solid fa-house-chimney"></i><span>Accueil</span>
+      </a>
+      <a href="search.html" class="nav-bar-item active">
+        <i class="fa-solid fa-compass"></i><span>Explorer</span>
+      </a>
+      <a href="cart.html" class="nav-bar-item cart-highlight-item">
+        <div class="cart-icon-container">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="cart-badge-counter" id="cartBadgeCount" style="display:none;">0</span>
+        </div>
+        <span>Panier</span>
+      </a>
+      <a href="profile.html" class="nav-bar-item">
+        <i class="fa-solid fa-circle-user"></i><span>Profil</span>
+      </a>
+    </nav>
+  </div>
+
+  <script type="module" src="search.js"></script>
+</body>
+</html>

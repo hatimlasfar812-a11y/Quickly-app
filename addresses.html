@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>عناويني - Quickly</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+
+<!-- Leaflet Map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<link rel="stylesheet" href="addresses.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="app-header">
+  <button class="back-btn" onclick="history.back()" aria-label="رجوع">
+    <i data-lucide="arrow-right"></i>
+  </button>
+  <h1>عناويني</h1>
+  <button class="header-spacer" aria-hidden="true"></button>
+</header>
+
+<div class="container">
+
+  <!-- Stats Bar -->
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-item">
+      <i data-lucide="map-pin"></i>
+      <span><strong id="totalCount">0</strong> عنوان</span>
+    </div>
+    <div class="stat-item">
+      <i data-lucide="check-circle-2"></i>
+      <span><strong id="defaultCount">0</strong> افتراضي</span>
+    </div>
+  </div>
+
+  <!-- Add Button -->
+  <button id="addAddressBtn" class="add-btn">
+    <i data-lucide="plus"></i>
+    <span>إضافة عنوان جديد</span>
+  </button>
+
+  <!-- Addresses List -->
+  <div id="addressesList" class="addresses-list">
+    <!-- Loading state -->
+    <div class="loading-state" id="loadingState">
+      <div class="spinner"></div>
+      <p>جاري التحميل...</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal: Add / Edit Address -->
+<div id="addressModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    
+    <div class="modal-header">
+      <h2 id="modalTitle">إضافة عنوان جديد</h2>
+      <button class="close-modal" onclick="closeAddressModal()" aria-label="إغلاق">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+  <!-- Search Bar -->
+<div class="address-search-bar">
+  <i data-lucide="search"></i>
+  <input type="text" id="addressSearchInput" placeholder="ابحث عن منطقة أو شارع..." autocomplete="off">
+  <button type="button" class="search-go-btn" id="searchGoBtn">
+    <i data-lucide="arrow-left"></i>
+  </button>
+  <div id="searchSuggestions" class="search-suggestions hidden"></div>
+</div>
+
+<!-- Map Picker -->
+<div class="map-wrapper">
+  <div id="mapPicker" class="map-picker"></div>
+  <button type="button" class="gps-btn" id="gpsBtn" title="استخدم موقعي الحالي">
+    <i data-lucide="crosshair"></i>
+  </button>
+  <div class="map-hint">
+    <i data-lucide="move"></i>
+    <span>اسحب الدبوس لتحديد الموقع بدقة</span>
+  </div>
+</div>
+
+      <!-- Address Type Tabs -->
+      <div class="type-tabs">
+        <button type="button" class="type-tab active" data-type="home">
+          <i data-lucide="home"></i>
+          <span>المنزل</span>
+        </button>
+        <button type="button" class="type-tab" data-type="work">
+          <i data-lucide="briefcase"></i>
+          <span>العمل</span>
+        </button>
+        <button type="button" class="type-tab" data-type="other">
+          <i data-lucide="map-pin"></i>
+          <span>آخر</span>
+        </button>
+      </div>
+
+      <!-- Address Input -->
+      <div class="form-group">
+        <label for="addressInput">
+          <i data-lucide="map-pin"></i>
+          العنوان الكامل *
+        </label>
+        <input type="text" id="addressInput" placeholder="مثال: حي موريتانيا، وجدة" required>
+      </div>
+
+      <!-- Details Input -->
+      <div class="form-group">
+        <label for="detailsInput">
+          <i data-lucide="info"></i>
+          تفاصيل إضافية (اختياري)
+        </label>
+        <input type="text" id="detailsInput" placeholder="مثال: قرب مسجد..." >
+      </div>
+
+      <!-- Phone Input -->
+      <div class="form-group">
+        <label for="phoneInput">
+          <i data-lucide="phone"></i>
+          رقم الهاتف (اختياري)
+        </label>
+        <input type="tel" id="phoneInput" placeholder="06XXXXXXXX" >
+      </div>
+
+      <!-- Default Toggle -->
+      <label class="switch-row">
+        <div class="switch-info">
+          <i data-lucide="star"></i>
+          <span>تعيين كعنوان افتراضي</span>
+        </div>
+        <div class="toggle-switch">
+          <input type="checkbox" id="defaultToggle">
+          <span class="slider"></span>
+        </div>
+      </label>
+
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" onclick="closeAddressModal()">إلغاء</button>
+      <button type="button" class="btn-save" id="saveAddressBtn">
+        <i data-lucide="check"></i>
+        <span>حفظ</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div id="confirmModal" class="modal-overlay hidden">
+  <div class="modal-card modal-sm">
+    <div class="confirm-icon">
+      <i data-lucide="trash-2"></i>
+    </div>
+    <h3 id="confirmTitle">حذف العنوان</h3>
+    <p id="confirmMsg">هل أنت متأكد من الحذف؟</p>
+    <div class="confirm-actions">
+      <button class="btn-cancel" onclick="closeConfirmModal()">إلغاء</button>
+      <button class="btn-danger" id="confirmActionBtn">حذف</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script type="module" src="addresses.js"></script>
+</body>
+</html>

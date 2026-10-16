@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Quickly - Parrainage & Inviter des amis</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- SUB HEADER -->
+    <header class="sub-header-bar">
+      <a href="index.html" class="back-nav-btn" aria-label="Retour"><i class="fa-solid fa-arrow-left"></i></a>
+      <h2>Invitez vos amis</h2>
+    </header>
+
+    <main class="main-content-scroll" style="padding: 16px;">
+
+      <!-- HERO INVITE BANNER -->
+      <div class="invite-hero-box">
+        <div class="invite-hero-ico"><i class="fa-solid fa-gift"></i></div>
+        <h3>Gagnez 30 MAD par ami !</h3>
+        <p>Partagez votre code unique. Votre ami reçoit 20 MAD de réduction et vous gagnez un bonus dès sa première commande.</p>
+      </div>
+
+      <!-- REFERRAL CODE CARD -->
+      <div class="referral-code-card">
+        <span>Votre Code Personnel de Parrainage</span>
+        <div class="code-pill-row">
+          <strong id="userReferralCode">QUICKLY2026</strong>
+          <button class="btn-copy-action" id="copyCodeBtn"><i class="fa-solid fa-copy"></i> Copier</button>
+        </div>
+        <button class="btn-share-native" id="shareBtn"><i class="fa-solid fa-share-nodes"></i> Partager le lien d'invitation</button>
+      </div>
+
+      <!-- STATS GRID -->
+      <div class="invite-stats-row">
+        <div class="stat-box-item">
+          <i class="fa-solid fa-user-group"></i>
+          <span class="num" id="invitedCount">0</span>
+          <label>Amis invités</label>
+        </div>
+        <div class="stat-box-item">
+          <i class="fa-solid fa-wallet"></i>
+          <span class="num" id="earnedAmount">0 MAD</span>
+          <label>Gains totaux</label>
+        </div>
+      </div>
+
+      <!-- HOW IT WORKS -->
+      <div class="section-title-bar" style="margin-top: 15px;">
+        <h2>Comment ça marche ?</h2>
+      </div>
+      <div class="steps-timeline-box">
+        <div class="step-card-row">
+          <div class="step-num-circle">1</div>
+          <div class="step-info-text">
+            <h4>Partagez votre code</h4>
+            <p>Envoyez votre lien ou code unique à vos proches.</p>
+          </div>
+        </div>
+        <div class="step-card-row">
+          <div class="step-num-circle">2</div>
+          <div class="step-info-text">
+            <h4>Votre ami commande</h4>
+            <p>Il profite d'une réduction immédiate sur son premier repas.</p>
+          </div>
+        </div>
+        <div class="step-card-row">
+          <div class="step-num-circle">3</div>
+          <div class="step-info-text">
+            <h4>Vous touchez votre bonus</h4>
+            <p>Votre compte est crédité automatiquement dès validation.</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav class="bottom-nav-bar">
+      <a href="index.html" class="nav-bar-item">
+        <i class="fa-solid fa-house-chimney"></i>
+        <span>Accueil</span>
+      </a>
+      <a href="search.html" class="nav-bar-item">
+        <i class="fa-solid fa-compass"></i>
+        <span>Explorer</span>
+      </a>
+      <a href="cart.html" class="nav-bar-item cart-highlight-item">
+        <div class="cart-icon-container">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="cart-badge-counter" id="cartBadgeCount" style="display:none;">0</span>
+        </div>
+        <span>Panier</span>
+      </a>
+      <a href="profile.html" class="nav-bar-item">
+        <i class="fa-solid fa-circle-user"></i>
+        <span>Profil</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <script type="module">
+    import { auth } from "./firebase.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uniqueCode = "QCK-" + user.uid.substring(0, 6).toUpperCase();
+        document.getElementById("userReferralCode").textContent = uniqueCode;
+      }
+    });
+
+    document.getElementById("copyCodeBtn").onclick = () => {
+      const code = document.getElementById("userReferralCode").textContent;
+      navigator.clipboard.writeText(code);
+      const btn = document.getElementById("copyCodeBtn");
+      btn.innerHTML = `<i class="fa-solid fa-check"></i> Copié !`;
+      btn.style.background = "#16a34a";
+      setTimeout(() => {
+        btn.innerHTML = `<i class="fa-solid fa-copy"></i> Copier`;
+        btn.style.background = "var(--primary-blue)";
+      }, 2000);
+    };
+
+    document.getElementById("shareBtn").onclick = async () => {
+      const code = document.getElementById("userReferralCode").textContent;
+      const shareText = `Rejoins-moi sur Quickly avec mon code parrain ${code} et profite de réductions exceptionnelles sur tes livraisons !`;
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'Quickly - Parrainage',
+            text: shareText,
+            url: window.location.origin
+          });
+        } catch (err) {
+          console.log("Share canceled", err);
+        }
+      } else {
+        navigator.clipboard.writeText(shareText);
+        alert("Lien et code copiés dans le presse-papier !");
+      }
+    };
+  </script>
+</body>
+</html>
