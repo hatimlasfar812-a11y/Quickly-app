@@ -9,7 +9,7 @@
 <title>One Call - Admin</title>
 
 <!-- Lucide Icons -->
-<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
 <!-- Leaflet Map -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -326,13 +326,9 @@
             <h1>الهايبرماركت</h1>
             <p>سلاسل كبرى مع جلب تلقائي</p>
         </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="btn-secondary" onclick="openSyncLogModal()"><i data-lucide="history"></i> سجل المزامنة</button>
-            <button class="btn-secondary" onclick="openSyncSettingsModal()"><i data-lucide="settings"></i> المزامنة</button>
-            <button class="btn-primary" onclick="openAddHypermarketModal()">
-                <i data-lucide="plus"></i> إضافة سلسلة
-            </button>
-        </div>
+        <button class="btn-primary" onclick="openAddHypermarketModal()">
+            <i data-lucide="plus"></i> إضافة سلسلة
+        </button>
     </div>
 
     <div class="stats-grid">
@@ -355,15 +351,23 @@
     <div class="card-box mt-4">
         <div class="card-header">
             <h3>المنتجات المُجلبة</h3>
-            <div class="search-box small">
-                <i data-lucide="search"></i>
-                <input type="text" id="searchHyperProduct" placeholder="بحث منتج...">
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <div class="category-tabs" style="margin:0;">
+                    <button class="cat-tab active" data-hyper-filter="pending_review" onclick="setHyperProductsFilter('pending_review')">⏳ قيد المراجعة</button>
+                    <button class="cat-tab" data-hyper-filter="approved" onclick="setHyperProductsFilter('approved')">✅ معتمد</button>
+                    <button class="cat-tab" data-hyper-filter="rejected" onclick="setHyperProductsFilter('rejected')">❌ مرفوض</button>
+                    <button class="cat-tab" data-hyper-filter="all" onclick="setHyperProductsFilter('all')">📋 الكل</button>
+                </div>
+                <div class="search-box small">
+                    <i data-lucide="search"></i>
+                    <input type="text" id="searchHyperProduct" placeholder="بحث منتج...">
+                </div>
             </div>
         </div>
         <div class="table-responsive">
             <table class="custom-table">
                 <thead>
-                    <tr><th>المنتج</th><th>السلسلة</th><th>الباركود</th><th>السعر</th><th>الحالة</th><th>إجراءات</th></tr>
+                    <tr><th>المنتج</th><th>السلسلة</th><th>المعرّف</th><th>السعر</th><th>الحالة</th><th>إجراءات</th></tr>
                 </thead>
                 <tbody id="hyperProductsTableBody">
                     <tr><td colspan="6" class="text-center empty-state"><p>لا توجد منتجات.</p></td></tr>
@@ -492,66 +496,65 @@
 </section>
 
 <!-- ORDERS -->
-<!-- ═══════════════ ORDERS ═══════════════ -->
-                <section id="tab-orders" class="tab-pane">
-                    <div class="page-hero">
-                        <div>
-                            <h1>الطلبات</h1>
-                            <p>متابعة وتحديث حالات الطلبات</p>
-                        </div>
-                        <div class="hero-actions">
-                            <button class="btn-primary btn-sm" onclick="autoAssignAllPending()" style="background:linear-gradient(135deg,#10B981,#059669);">
-                                <i data-lucide="zap"></i> تعيين تلقائي للكل
-                            </button>
-                            <button class="btn-outline btn-sm" onclick="exportOrdersCSV()">
-                                <i data-lucide="download"></i> تصدير CSV
-                            </button>
-                        </div>
-                    </div>
+<section id="tab-orders" class="tab-pane">
+    <div class="page-hero">
+        <div>
+            <h1>الطلبات</h1>
+            <p>متابعة وتحديث حالات الطلبات</p>
+        </div>
+        <div class="hero-actions">
+            <button class="btn-primary btn-sm" onclick="autoAssignAllPending()" style="background:linear-gradient(135deg,#10B981,#059669);">
+                <i data-lucide="zap"></i> تعيين تلقائي للكل
+            </button>
+            <button class="btn-outline btn-sm" onclick="exportOrdersCSV()">
+                <i data-lucide="download"></i> تصدير CSV
+            </button>
+        </div>
+    </div>
 
-                    <div class="toolbar-advanced">
-                        <div class="search-box">
-                            <i data-lucide="search"></i>
-                            <input type="text" id="searchOrderInput" placeholder="بحث برقم الطلب أو اسم العميل...">
-                        </div>
-                        <select id="filterOrderStatus" class="filter-select">
-                            <option value="all">كل الحالات</option>
-                            <option value="pending">معلق</option>
-                            <option value="confirmed">مؤكد</option>
-                            <option value="preparing">قيد التحضير</option>
-                            <option value="ready">جاهز</option>
-                            <option value="assigned">معين</option>
-                            <option value="accepted">مقبول</option>
-                            <option value="picked_up">مستلم</option>
-                            <option value="on_the_way">في الطريق</option>
-                            <option value="delivered">مكتمل</option>
-                            <option value="cancelled">ملغي</option>
-                        </select>
-                    </div>
+    <div class="toolbar-advanced">
+        <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="searchOrderInput" placeholder="بحث برقم الطلب أو اسم العميل...">
+        </div>
+        <select id="filterOrderStatus" class="filter-select">
+            <option value="all">كل الحالات</option>
+            <option value="pending">معلق</option>
+            <option value="confirmed">مؤكد</option>
+            <option value="preparing">قيد التحضير</option>
+            <option value="ready">جاهز</option>
+            <option value="assigned">معين</option>
+            <option value="accepted">مقبول</option>
+            <option value="picked_up">مستلم</option>
+            <option value="on_the_way">في الطريق</option>
+            <option value="delivered">مكتمل</option>
+            <option value="cancelled">ملغي</option>
+        </select>
+    </div>
 
-                    <div class="card-box">
-                        <div class="table-responsive">
-                            <table class="custom-table">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>العميل</th>
-                                        <th>المتجر</th>
-                                        <th>السائق</th>
-                                        <th>المبلغ</th>
-                                        <th>الحالة</th>
-                                        <th>التاريخ</th>
-                                        <th>إجراءات</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="ordersTableBody">
-                                    <tr><td colspan="8" class="text-center">جاري التحميل...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div id="ordersPagination"></div>
-                    </div>
-                </section>
+    <div class="card-box">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>العميل</th>
+                        <th>المتجر</th>
+                        <th>السائق</th>
+                        <th>المبلغ</th>
+                        <th>الحالة</th>
+                        <th>التاريخ</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                    <tr><td colspan="8" class="text-center">جاري التحميل...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="ordersPagination"></div>
+    </div>
+</section>
 
 <!-- OFFERS -->
 <section id="tab-offers" class="tab-pane">
@@ -667,184 +670,173 @@
         </div>
     </div>
 </section>
-<!-- ═══════════════ EARNINGS ═══════════════ -->
-                <section id="tab-earnings" class="tab-pane">
-                    <div class="page-hero">
-                        <div>
-                            <h1>💰 الأرباح والدفعات</h1>
-                            <p>إدارة أرباح السائقين وتسجيل الدفعات</p>
-                        </div>
-                        <div class="hero-actions">
-                            <button class="btn-outline btn-sm" onclick="exportEarningsCSV()">
-                                <i data-lucide="download"></i> تصدير
-                            </button>
-                            <button class="btn-primary btn-sm" onclick="openPaymentModal()">
-                                <i data-lucide="banknote"></i> تسجيل دفعة
-                            </button>
-                        </div>
-                    </div>
 
-                    <!-- KPI Cards -->
-                    <div class="stats-grid mb-4">
-                        <div class="stat-card stat-primary">
-                            <div class="stat-head">
-                                <span class="stat-label">إجمالي الأرباح (الشهر)</span>
-                            </div>
-                            <div class="stat-value" id="earnStatTotalMonth">0 د.م</div>
-                            <div class="stat-foot"><i data-lucide="trending-up"></i> هذا الشهر</div>
-                        </div>
-                        <div class="stat-card stat-green">
-                            <div class="stat-head">
-                                <span class="stat-label">مدفوع للسائقين</span>
-                            </div>
-                            <div class="stat-value" id="earnStatPaid">0 د.م</div>
-                            <div class="stat-foot"><i data-lucide="check-circle"></i> تم الدفع</div>
-                        </div>
-                        <div class="stat-card stat-orange">
-                            <div class="stat-head">
-                                <span class="stat-label">مستحقات متبقية</span>
-                            </div>
-                            <div class="stat-value" id="earnStatPending">0 د.م</div>
-                            <div class="stat-foot"><i data-lucide="clock"></i> للدفع</div>
-                        </div>
-                        <div class="stat-card stat-purple">
-                            <div class="stat-head">
-                                <span class="stat-label">دفعات هذا الشهر</span>
-                            </div>
-                            <div class="stat-value" id="earnStatCount">0</div>
-                            <div class="stat-foot"><i data-lucide="receipt"></i> دفعة</div>
-                        </div>
-                    </div>
+<!-- EARNINGS -->
+<section id="tab-earnings" class="tab-pane">
+    <div class="page-hero">
+        <div>
+            <h1>💰 الأرباح والدفعات</h1>
+            <p>إدارة أرباح السائقين وتسجيل الدفعات</p>
+        </div>
+        <div class="hero-actions">
+            <button class="btn-outline btn-sm" onclick="exportEarningsCSV()">
+                <i data-lucide="download"></i> تصدير
+            </button>
+            <button class="btn-primary btn-sm" onclick="openPaymentModal()">
+                <i data-lucide="banknote"></i> تسجيل دفعة
+            </button>
+        </div>
+    </div>
 
-                    <!-- Filter bar -->
-                    <div class="filter-bar mb-4">
-                        <div class="search-box">
-                            <i data-lucide="search"></i>
-                            <input type="text" id="searchEarningsInput" placeholder="بحث باسم السائق...">
-                        </div>
-                        <select id="filterEarningsPeriod" class="filter-select">
-                            <option value="all">كل الفترات</option>
-                            <option value="today">اليوم</option>
-                            <option value="week">هذا الأسبوع</option>
-                            <option value="month">هذا الشهر</option>
-                        </select>
-                        <select id="filterEarningsStatus" class="filter-select">
-                            <option value="all">كل الحالات</option>
-                            <option value="pending">مستحق</option>
-                            <option value="paid">مدفوع</option>
-                        </select>
-                    </div>
+    <div class="stats-grid mb-4">
+        <div class="stat-card stat-primary">
+            <div class="stat-head"><span class="stat-label">إجمالي الأرباح (الشهر)</span></div>
+            <div class="stat-value" id="earnStatTotalMonth">0 د.م</div>
+            <div class="stat-foot"><i data-lucide="trending-up"></i> هذا الشهر</div>
+        </div>
+        <div class="stat-card stat-green">
+            <div class="stat-head"><span class="stat-label">مدفوع للسائقين</span></div>
+            <div class="stat-value" id="earnStatPaid">0 د.م</div>
+            <div class="stat-foot"><i data-lucide="check-circle"></i> تم الدفع</div>
+        </div>
+        <div class="stat-card stat-orange">
+            <div class="stat-head"><span class="stat-label">مستحقات متبقية</span></div>
+            <div class="stat-value" id="earnStatPending">0 د.م</div>
+            <div class="stat-foot"><i data-lucide="clock"></i> للدفع</div>
+        </div>
+        <div class="stat-card stat-purple">
+            <div class="stat-head"><span class="stat-label">دفعات هذا الشهر</span></div>
+            <div class="stat-value" id="earnStatCount">0</div>
+            <div class="stat-foot"><i data-lucide="receipt"></i> دفعة</div>
+        </div>
+    </div>
 
-                    <!-- Earnings Table -->
-                    <div class="card-box">
-                        <div class="table-responsive">
-                            <table class="custom-table">
-                                <thead>
-                                    <tr>
-                                        <th>السائق</th>
-                                        <th>Driver ID</th>
-                                        <th>التوصيلات</th>
-                                        <th>الإجمالي</th>
-                                        <th>المدفوع</th>
-                                        <th>المتبقي</th>
-                                        <th>آخر دفعة</th>
-                                        <th>إجراءات</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="earningsTableBody">
-                                    <tr><td colspan="8" class="text-center">جاري التحميل...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+    <div class="filter-bar mb-4">
+        <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="searchEarningsInput" placeholder="بحث باسم السائق...">
+        </div>
+        <select id="filterEarningsPeriod" class="filter-select">
+            <option value="all">كل الفترات</option>
+            <option value="today">اليوم</option>
+            <option value="week">هذا الأسبوع</option>
+            <option value="month">هذا الشهر</option>
+        </select>
+        <select id="filterEarningsStatus" class="filter-select">
+            <option value="all">كل الحالات</option>
+            <option value="pending">مستحق</option>
+            <option value="paid">مدفوع</option>
+        </select>
+    </div>
 
-                    <!-- Payment History -->
-                    <div class="card-box mt-4">
-                        <div class="card-header">
-                            <h3><i data-lucide="history" style="display:inline;width:18px;height:18px;vertical-align:-3px;"></i> سجل الدفعات</h3>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="custom-table">
-                                <thead>
-                                    <tr>
-                                        <th>التاريخ</th>
-                                        <th>السائق</th>
-                                        <th>المبلغ</th>
-                                        <th>الفترة</th>
-                                        <th>طريقة الدفع</th>
-                                        <th>بواسطة</th>
-                                        <th>ملاحظات</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="paymentsHistoryBody">
-                                    <tr><td colspan="7" class="text-center">لا توجد دفعات بعد</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
+    <div class="card-box">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>السائق</th>
+                        <th>Driver ID</th>
+                        <th>التوصيلات</th>
+                        <th>الإجمالي</th>
+                        <th>المدفوع</th>
+                        <th>المتبقي</th>
+                        <th>آخر دفعة</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="earningsTableBody">
+                    <tr><td colspan="8" class="text-center">جاري التحميل...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-                <!-- ═══════════════ ANALYTICS ═══════════════ -->
-                <section id="tab-analytics" class="tab-pane">
-                    <div class="page-hero">
-                        <div>
-                            <h1>📊 التحليلات المتقدمة</h1>
-                            <p>رؤى تفصيلية عن أداء النظام</p>
-                        </div>
-                    </div>
+    <div class="card-box mt-4">
+        <div class="card-header">
+            <h3><i data-lucide="history" style="display:inline;width:18px;height:18px;vertical-align:-3px;"></i> سجل الدفعات</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>التاريخ</th>
+                        <th>السائق</th>
+                        <th>المبلغ</th>
+                        <th>الفترة</th>
+                        <th>طريقة الدفع</th>
+                        <th>بواسطة</th>
+                        <th>ملاحظات</th>
+                    </tr>
+                </thead>
+                <tbody id="paymentsHistoryBody">
+                    <tr><td colspan="7" class="text-center">لا توجد دفعات بعد</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
 
-                    <div class="stats-grid mb-4">
-                        <div class="stat-card stat-green">
-                            <div class="stat-head"><span class="stat-label">معدل إتمام الطلبات</span></div>
-                            <div class="stat-value" id="anaCompletionRate">0%</div>
-                            <div class="stat-foot"><i data-lucide="check-circle"></i> آخر 30 يوم</div>
-                        </div>
-                        <div class="stat-card stat-blue">
-                            <div class="stat-head"><span class="stat-label">متوسط وقت التوصيل</span></div>
-                            <div class="stat-value" id="anaAvgDeliveryTime">0 د</div>
-                            <div class="stat-foot"><i data-lucide="clock"></i> من الطلب للتسليم</div>
-                        </div>
-                        <div class="stat-card stat-orange">
-                            <div class="stat-head"><span class="stat-label">متوسط قيمة الطلب</span></div>
-                            <div class="stat-value" id="anaAvgOrderValue">0 د.م</div>
-                            <div class="stat-foot"><i data-lucide="coins"></i> متوسط</div>
-                        </div>
-                        <div class="stat-card stat-purple">
-                            <div class="stat-head"><span class="stat-label">معدل التكرار</span></div>
-                            <div class="stat-value" id="anaRepeatRate">0%</div>
-                            <div class="stat-foot"><i data-lucide="users"></i> عملاء متكررون</div>
-                        </div>
-                    </div>
+<!-- ANALYTICS -->
+<section id="tab-analytics" class="tab-pane">
+    <div class="page-hero">
+        <div>
+            <h1>📊 التحليلات المتقدمة</h1>
+            <p>رؤى تفصيلية عن أداء النظام</p>
+        </div>
+    </div>
 
-                    <div class="dashboard-grid">
-                        <div class="card-box">
-                            <div class="card-header">
-                                <h3>📈 الطلبات خلال 7 أيام</h3>
-                            </div>
-                            <div class="chart-container-lg"><canvas id="analyticsWeekChart"></canvas></div>
-                        </div>
-                        <div class="card-box">
-                            <div class="card-header">
-                                <h3>🥇 أفضل السائقين</h3>
-                            </div>
-                            <div id="topDriversList"></div>
-                        </div>
-                    </div>
+    <div class="stats-grid mb-4">
+        <div class="stat-card stat-green">
+            <div class="stat-head"><span class="stat-label">معدل إتمام الطلبات</span></div>
+            <div class="stat-value" id="anaCompletionRate">0%</div>
+            <div class="stat-foot"><i data-lucide="check-circle"></i> آخر 30 يوم</div>
+        </div>
+        <div class="stat-card stat-blue">
+            <div class="stat-head"><span class="stat-label">متوسط وقت التوصيل</span></div>
+            <div class="stat-value" id="anaAvgDeliveryTime">0 د</div>
+            <div class="stat-foot"><i data-lucide="clock"></i> من الطلب للتسليم</div>
+        </div>
+        <div class="stat-card stat-orange">
+            <div class="stat-head"><span class="stat-label">متوسط قيمة الطلب</span></div>
+            <div class="stat-value" id="anaAvgOrderValue">0 د.م</div>
+            <div class="stat-foot"><i data-lucide="coins"></i> متوسط</div>
+        </div>
+        <div class="stat-card stat-purple">
+            <div class="stat-head"><span class="stat-label">معدل التكرار</span></div>
+            <div class="stat-value" id="anaRepeatRate">0%</div>
+            <div class="stat-foot"><i data-lucide="users"></i> عملاء متكررون</div>
+        </div>
+    </div>
 
-                    <div class="card-box mt-4">
-                        <div class="card-header">
-                            <h3>🏆 أفضل المطاعم</h3>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="custom-table">
-                                <thead>
-                                    <tr><th>#</th><th>المطعم</th><th>الطلبات</th><th>الإيرادات</th><th>متوسط التقييم</th></tr>
-                                </thead>
-                                <tbody id="topRestaurantsBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
+    <div class="dashboard-grid">
+        <div class="card-box">
+            <div class="card-header">
+                <h3>📈 الطلبات خلال 7 أيام</h3>
+            </div>
+            <div class="chart-container-lg"><canvas id="analyticsWeekChart"></canvas></div>
+        </div>
+        <div class="card-box">
+            <div class="card-header">
+                <h3>🥇 أفضل السائقين</h3>
+            </div>
+            <div id="topDriversList"></div>
+        </div>
+    </div>
+
+    <div class="card-box mt-4">
+        <div class="card-header">
+            <h3>🏆 أفضل المطاعم</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr><th>#</th><th>المطعم</th><th>الطلبات</th><th>الإيرادات</th><th>متوسط التقييم</th></tr>
+                </thead>
+                <tbody id="topRestaurantsBody"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
 </main>
 </div>
 </div>
@@ -1367,98 +1359,6 @@
     </div>
 </div>
 
-<!-- DRIVER DETAILS MODAL (requis par openDriverDetails dans admin.js) -->
-<div class="modal-overlay hidden" id="driverDetailsModal">
-    <div class="modal-card modal-lg">
-        <div class="modal-header">
-            <div>
-                <h3 id="ddTitle">سائق</h3>
-                <small id="ddId" style="color:var(--text-muted);"></small>
-            </div>
-            <button class="close-modal" onclick="closeModal('driverDetailsModal')"><i data-lucide="x"></i></button>
-        </div>
-        <div id="ddContent"></div>
-    </div>
-</div>
-
-<!-- PAYMENT MODAL (requis par openPaymentModal dans admin.js) -->
-<div class="modal-overlay hidden" id="paymentModal">
-    <div class="modal-card">
-        <div class="modal-header">
-            <h3>تسجيل دفعة لسائق</h3>
-            <button class="close-modal" onclick="closeModal('paymentModal')"><i data-lucide="x"></i></button>
-        </div>
-        <form id="paymentForm">
-            <div class="form-group">
-                <label>السائق *</label>
-                <select id="payDriverSelect" class="form-control" required onchange="updatePaymentSummary()"></select>
-            </div>
-            <div class="form-group">
-                <label>الفترة</label>
-                <select id="payPeriod" class="form-control">
-                    <option value="all">الكل</option>
-                    <option value="today">اليوم</option>
-                    <option value="week">هذا الأسبوع</option>
-                    <option value="month">هذا الشهر</option>
-                </select>
-            </div>
-            <div id="paySummaryBox" class="alert"></div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>المبلغ (د.م) *</label>
-                    <input type="number" id="payAmount" min="0" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label>طريقة الدفع</label>
-                    <select id="payMethod" class="form-control">
-                        <option value="cash">نقدي</option>
-                        <option value="bank">تحويل بنكي</option>
-                        <option value="wallet">محفظة إلكترونية</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group"><label>المرجع</label><input type="text" id="payReference" placeholder="رقم الإيصال أو التحويل"></div>
-            <div class="form-group"><label>ملاحظات</label><input type="text" id="payNotes"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary" onclick="closeModal('paymentModal')">إلغاء</button>
-                <button type="submit" class="btn-primary">تسجيل الدفعة</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- SYNC LOG MODAL (requis par openSyncLogModal dans admin.js) -->
-<div class="modal-overlay hidden" id="syncLogModal">
-    <div class="modal-card modal-lg">
-        <div class="modal-header">
-            <h3>سجل المزامنة</h3>
-            <button class="close-modal" onclick="closeModal('syncLogModal')"><i data-lucide="x"></i></button>
-        </div>
-        <div class="table-responsive">
-            <table class="custom-table">
-                <thead><tr><th>التاريخ</th><th>السلسلة</th><th>الحالة</th><th>المنتجات</th><th>المدة</th><th>تفاصيل</th></tr></thead>
-                <tbody id="syncLogTableBody"><tr><td colspan="6" class="text-center">لا توجد عمليات</td></tr></tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- SYNC SETTINGS MODAL (information seulement : le scraper tourne hors du site) -->
-<div class="modal-overlay hidden" id="syncSettingsModal">
-    <div class="modal-card modal-sm">
-        <div class="modal-header">
-            <h3>إعدادات المزامنة</h3>
-            <button class="close-modal" onclick="closeModal('syncSettingsModal')"><i data-lucide="x"></i></button>
-        </div>
-        <p style="line-height:1.8; font-size:14px;">
-            جلب منتجات الهايبرماركت يتم بواسطة خدمة خارجية (Scraper) تكتب النتائج في Firestore
-            داخل المجموعات <strong>hypermarket_products</strong> و<strong>sync_logs</strong>.
-            هذا الموقع يعرض النتائج فقط ولا يشغّل الـ Scraper بنفسه.
-        </p>
-        <div class="modal-footer"><button class="btn-secondary" onclick="closeModal('syncSettingsModal')">إغلاق</button></div>
-    </div>
-</div>
-
 <!-- REVIEW DETAILS MODAL -->
 <div class="modal-overlay hidden" id="reviewDetailsModal">
     <div class="modal-card">
@@ -1467,6 +1367,68 @@
             <button class="close-modal" onclick="closeModal('reviewDetailsModal')"><i data-lucide="x"></i></button>
         </div>
         <div id="reviewDetailsContent"></div>
+    </div>
+</div>
+
+<!-- DRIVER DETAILS MODAL -->
+<div class="modal-overlay hidden" id="driverDetailsModal">
+    <div class="modal-card modal-lg">
+        <div class="modal-header">
+            <div>
+                <h3 id="ddTitle">تفاصيل السائق</h3>
+                <small id="ddId"></small>
+            </div>
+            <button class="close-modal" onclick="closeModal('driverDetailsModal')"><i data-lucide="x"></i></button>
+        </div>
+        <div id="ddContent"></div>
+    </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay hidden" id="paymentModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>💰 تسجيل دفعة</h3>
+            <button class="close-modal" onclick="closeModal('paymentModal')"><i data-lucide="x"></i></button>
+        </div>
+        <form id="paymentForm">
+            <div class="form-group">
+                <label>السائق *</label>
+                <select id="payDriverSelect" required><option value="">-- اختر --</option></select>
+            </div>
+            <div id="paySummaryBox" class="alert alert-info">
+                <i data-lucide="info"></i>
+                <div>اختر سائقاً</div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>الفترة</label>
+                    <select id="payPeriod">
+                        <option value="today">اليوم</option>
+                        <option value="week">هذا الأسبوع</option>
+                        <option value="month">هذا الشهر</option>
+                        <option value="all" selected>كل الفترات</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>طريقة الدفع</label>
+                    <select id="payMethod">
+                        <option value="cash">💵 نقدي</option>
+                        <option value="bank">🏦 تحويل بنكي</option>
+                        <option value="wallet">📱 محفظة</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>المبلغ (د.م) *</label><input type="number" id="payAmount" step="0.01" required></div>
+                <div class="form-group"><label>المرجع</label><input type="text" id="payReference" placeholder="رقم المعاملة"></div>
+            </div>
+            <div class="form-group"><label>ملاحظات</label><textarea id="payNotes" rows="2"></textarea></div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('paymentModal')">إلغاء</button>
+                <button type="submit" class="btn-primary"><i data-lucide="check-circle"></i> تسجيل</button>
+            </div>
+        </form>
     </div>
 </div>
 

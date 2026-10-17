@@ -81,6 +81,7 @@ const stateCache = {
     shopsCategory: "all",
     driversSearch: "", driversStatus: "all", driversVerification: "all",
     hyperProductsSearch: "",
+    hyperProductsStatusFilter: "pending_review",
     ordersSearch: "", ordersStatus: "all",
     ordersPage: 1, ordersPerPage: 15,
     lastOrderCount: 0
@@ -507,7 +508,7 @@ function initRealtimeListeners() {
             }, err => {}));
 
         activeUnsubscribers.push(onSnapshot(
-            query(collection(db, "hypermarket_products"), orderBy("updatedAt", "desc"), limit(300)),
+            query(collection(db, "hypermarket_products"), limit(300)),
             snap => {
                 stateCache.hyperProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderHyperProductsTable();
@@ -1724,31 +1725,136 @@ function renderHyperProductsTable() {
     const tbody = document.getElementById("hyperProductsTableBody");
     if (!tbody) return;
     const q = (stateCache.hyperProductsSearch || "").toLowerCase();
-    let list = stateCache.hyperProducts;
+    let list = [...stateCache.hyperProducts];
+
     if (q) list = list.filter(p => (p.name || "").toLowerCase().includes(q));
+
+    const statusFilter = stateCache.hyperProductsStatusFilter || "pending_review";
+    if (statusFilter !== "all") {
+        list = list.filter(p => (p.status || "pending_review") === statusFilter);
+    }
+
+    list.sort((a, b) => {
+        const at = a.imported_at?.toMillis?.() || a.updatedAt?.toMillis?.() || 0;
+        const bt = b.imported_at?.toMillis?.() || b.updatedAt?.toMillis?.() || 0;
+        return bt - at;
+    });
+
     if (!list.length) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center empty-state"><p>لا توجد منتجات</p></td></tr>`;
+        const statusLabel = statusFilter === "pending_review" ? "قيد المراجعة" :
+                            statusFilter === "approved" ? "معتمدة" :
+                            statusFilter === "rejected" ? "مرفوضة" : "";
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center empty-state"><p>لا توجد منتجات ${statusLabel}</p></td></tr>`;
         return;
     }
+
     tbody.innerHTML = list.slice(0, 100).map(p => {
-        const chain = HYPER_CHAINS[p.chain] || HYPER_CHAINS.custom;
-        const finalPrice = Number(p.finalPrice || 0);
+        let storeName = p.store || "";
+        if (!storeName && p.chain && HYPER_CHAINS[p.chain]) storeName = HYPER_CHAINS[p.chain].name;
+        if (!storeName) storeName = "—";
+
+        const price = p.price || (p.finalPrice ? Number(p.finalPrice).toFixed(2) + " د.م" : "—");
+        const status = p.status || "pending_review";
+
+        let statusBadgeHtml = "";
+        if (status === "pending_review") statusBadgeHtml = '<span class="badge status-pending">⏳ قيد المراجعة</span>';
+        else if (status === "approved") statusBadgeHtml = '<span class="badge status-active">✅ معتمد</span>';
+        else if (status === "rejected") statusBadgeHtml = '<span class="badge status-cancelled">❌ مرفوض</span>';
+        else statusBadgeHtml = `<span class="badge badge-gray">${safe(status)}</span>`;
+
+        let actionsHtml = "";
+        if (status === "pending_review") {
+            actionsHtml = `
+                <button class="btn-sm" onclick="approveImportedProduct('${p.id}')" title="موافقة" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;margin-left:4px;">
+                    <i data-lucide="check"></i>
+                </button>
+                <button class="btn-sm btn-danger" onclick="rejectImportedProduct('${p.id}')" title="رفض">
+                    <i data-lucide="x"></i>
+                </button>`;
+        } else if (status === "approved") {
+            actionsHtml = `<span style="color:var(--success); font-size:11px; font-weight:800;">منشور</span>`;
+        } else if (status === "rejected") {
+            actionsHtml = `<button class="btn-sm btn-outline" onclick="approveImportedProduct('${p.id}')" title="استرجاع"><i data-lucide="rotate-ccw"></i></button>`;
+        }
+
+        const idShort = p.source_id ? p.source_id.substring(0, 8) : (p.id ? p.id.substring(0, 8) : "-");
+
         return `
             <tr>
                 <td>
                     <div class="driver-cell">
                         <img src="${safeAttr(p.image || 'https://via.placeholder.com/40')}" class="img-thumb" onerror="this.src='https://via.placeholder.com/40'">
-                        <div><strong style="font-size:12px;">${safe((p.name || "").substring(0, 40))}</strong></div>
+                        <div><strong style="font-size:12px;">${safe((p.name || "").substring(0, 45))}</strong></div>
                     </div>
                 </td>
-                <td><span class="badge badge-gray">${chain.icon} ${safe(chain.name)}</span></td>
-                <td><small>${safe(p.barcode || "-")}</small></td>
-                <td>${finalPrice.toFixed(2)} د.م</td>
-                <td><span class="badge status-active">متوفر</span></td>
-                <td></td>
+                <td><span class="badge badge-gray">${safe(storeName)}</span></td>
+                <td><small>${safe(idShort)}</small></td>
+                <td>${safe(String(price))}</td>
+                <td>${statusBadgeHtml}</td>
+                <td>${actionsHtml}</td>
             </tr>`;
     }).join("");
+    refreshIcons();
 }
+
+window.approveImportedProduct = async function (id) {
+    try {
+        const product = stateCache.hyperProducts.find(p => p.id === id);
+        if (!product) return showToast("المنتج غير موجود", "error");
+
+        await updateDoc(doc(db, "hypermarket_products", id), {
+            status: "approved",
+            approvedAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+        });
+
+        try {
+            await addDoc(collection(db, "admin_audit"), {
+                adminName: stateCache.adminName || "Admin",
+                adminEmail: stateCache.adminEmail || "",
+                action: "approve_product",
+                targetType: "hypermarket_product",
+                targetId: id,
+                details: { name: product.name, store: product.store },
+                createdAt: serverTimestamp()
+            });
+        } catch (e) { console.warn("audit failed:", e); }
+
+        showToast("✅ تمت الموافقة على " + (product.name || "").substring(0, 30), "success");
+    } catch (err) {
+        console.error(err);
+        showToast("فشل: " + err.message, "error");
+    }
+};
+
+window.rejectImportedProduct = function (id) {
+    const product = stateCache.hyperProducts.find(p => p.id === id);
+    openConfirmModal(
+        "رفض المنتج",
+        `هل تريد رفض "${(product?.name || 'المنتج').substring(0, 40)}"؟ لن يظهر للزبائن.`,
+        async () => {
+            try {
+                await updateDoc(doc(db, "hypermarket_products", id), {
+                    status: "rejected",
+                    rejectedAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                });
+                showToast("تم الرفض", "info");
+            } catch (err) {
+                console.error(err);
+                showToast("فشل", "error");
+            }
+        }
+    );
+};
+
+window.setHyperProductsFilter = function (status) {
+    stateCache.hyperProductsStatusFilter = status;
+    renderHyperProductsTable();
+    document.querySelectorAll("[data-hyper-filter]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.hyperFilter === status);
+    });
+};
 
 function updateHyperStats() {
     setText("hyperChainsCount", stateCache.hypermarkets.length);
