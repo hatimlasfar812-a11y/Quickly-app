@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0878D1">
+  <title>Supermarchés - Quickly</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+
+  <style>
+    :root {
+      --brand: #0878D1;
+      --brand-dark: #055a9e;
+      --brand-soft: #E8F3FC;
+      --bg: #F5F7FA;
+      --surface: #FFFFFF;
+      --text: #1B2430;
+      --muted: #6B7686;
+      --line: #E4E9F0;
+      --success: #12A150;
+      --radius: 18px;
+      --header-h: 64px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: "Cairo", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-tap-highlight-color: transparent;
+    }
+    [hidden] { display: none !important; }
+    svg.lucide { width: 20px; height: 20px; stroke-width: 2; flex-shrink: 0; }
+
+    /* ===== En-tête ===== */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      min-height: var(--header-h);
+      padding: env(safe-area-inset-top, 0) 16px 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .icon-btn {
+      width: 42px; height: 42px; border-radius: 12px; border: 0;
+      background: var(--bg); color: var(--text);
+      display: inline-flex; align-items: center; justify-content: center;
+      text-decoration: none; cursor: pointer; flex-shrink: 0; position: relative;
+    }
+    .topbar h1 { flex: 1; font-size: 19px; font-weight: 800; }
+    .cart-badge {
+      position: absolute; top: -5px; inset-inline-end: -5px;
+      min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px;
+      background: var(--brand); color: #fff; font-size: 11px; font-weight: 800;
+      display: inline-flex; align-items: center; justify-content: center;
+      border: 2px solid var(--surface);
+    }
+
+    /* ===== Contenu ===== */
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 18px 16px 40px; }
+    .intro h2 { font-size: 24px; font-weight: 800; }
+    .intro p { color: var(--muted); margin-top: 2px; font-size: 14px; }
+
+    .search {
+      margin: 16px 0 6px; display: flex; align-items: center; gap: 10px;
+      height: 48px; padding: 0 14px; background: var(--surface);
+      border: 1.5px solid var(--line); border-radius: 14px; color: var(--muted);
+    }
+    .search:focus-within { border-color: var(--brand); box-shadow: 0 0 0 4px rgba(8,120,209,.12); }
+    .search input { flex: 1; border: 0; outline: 0; background: transparent; font: inherit; font-size: 16px; color: var(--text); }
+    .count { font-size: 13px; color: var(--muted); margin: 8px 2px 14px; min-height: 18px; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+
+    .store-card {
+      display: flex; flex-direction: column; text-decoration: none; color: inherit;
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      overflow: hidden; transition: transform .15s, box-shadow .15s, border-color .15s;
+    }
+    a.store-card:hover, a.store-card:focus-visible { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(16,24,40,.1); border-color: var(--brand); outline: none; }
+    .store-card .cover {
+      height: 130px; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--brand-soft), #fff);
+    }
+    .store-card .cover img { max-width: 62%; max-height: 78%; object-fit: contain; }
+    .store-card .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; }
+    .store-card h3 { font-size: 18px; font-weight: 800; }
+    .meta { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+    .meta svg { width: 15px; height: 15px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .tag { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: var(--brand-soft); color: var(--brand-dark); }
+    .tag.open { background: #E3F6EA; color: var(--success); }
+    .tag.soon { background: #EEF0F4; color: var(--muted); }
+    .store-card.is-soon { opacity: .72; }
+    .go { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; font-weight: 800; color: var(--brand); font-size: 14px; }
+
+    .skeleton { height: 250px; border-radius: var(--radius); background: linear-gradient(90deg,#E9EDF3 25%,#F4F6FA 50%,#E9EDF3 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    .state { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .state svg { width: 54px; height: 54px; color: #C3CBD8; margin-bottom: 12px; }
+    .state h3 { color: var(--text); font-size: 18px; margin-bottom: 6px; }
+    .btn { margin-top: 16px; border: 0; border-radius: 12px; background: var(--brand); color: #fff; font: inherit; font-weight: 800; padding: 12px 22px; cursor: pointer; }
+
+    @media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } .store-card { transition: none; } }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a class="icon-btn" id="backBtn" href="index.html" aria-label="Retour"><i data-lucide="arrow-left"></i></a>
+    <h1>Supermarchés</h1>
+    <a class="icon-btn" href="cart.html" aria-label="Panier">
+      <i data-lucide="shopping-cart"></i>
+      <span class="cart-badge" id="cartBadge" hidden>0</span>
+    </a>
+  </header>
+
+  <main class="wrap">
+    <div class="intro">
+      <h2>Vos courses, livrées</h2>
+      <p>Choisissez un supermarché pour commencer.</p>
+    </div>
+
+    <label class="search">
+      <i data-lucide="search"></i>
+      <input id="searchInput" type="search" placeholder="Rechercher un magasin…" autocomplete="off" enterkeyhint="search">
+    </label>
+    <p class="count" id="countInfo"></p>
+
+    <section class="grid" id="storesGrid" aria-live="polite">
+      <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+    </section>
+  </main>
+
+  <script type="module" src="groceries.js"></script>
+</body>
+</html>
